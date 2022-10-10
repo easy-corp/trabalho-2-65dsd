@@ -4,4 +4,4 @@ do curso de Engenharia de Software da Universidade do Estado de Santa Catarina.
 
 Alunos: Gabriel Dolzan, Luis Felipe da Silva e Murilo Goedert.
 
-Para executar o projeto, precisa-se selecionar a opção “Run as Maven Build” (o projeto não executará se for selecionada a opção “Run as Java Application”). Diferentes IDE´s podem apresentar diferentes formas de selecionar alguma dessas opções. O parâmetro "Goals" será solicitado, nele deve ser preenchido a seguinte informação: clean javafx:run -e -X.
+Para executar o projeto selecione a opção “Run as Maven Build”, o projeto não executará se for selecionada a opção “Run as Java Application”, diferentes IDE´s possuem diferentes formas de selecionar essas opções. No parâmetro "goals", preencha a seguinte informação: clean javafx:run -e -X.
