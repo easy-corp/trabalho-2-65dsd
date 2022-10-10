@@ -1,11 +1,10 @@
 import java.io.IOException;
 
 import controle.ControladorMalha;
-import controle.LerArquivo;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-//clean javafx:run -e -X
+//mvn clean javafx:run -e -X
 public class App extends Application {
     
     public static void main(String[] args) throws IOException {

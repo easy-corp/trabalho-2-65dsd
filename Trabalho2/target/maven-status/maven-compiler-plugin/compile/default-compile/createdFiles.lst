@@ -1,3 +1,6 @@
 controle\LerArquivo.class
 App.class
+modelo\Casa.class
 controle\ControladorMalha.class
+modelo\ui\UiCasa.class
+visao\telaMalha.class
