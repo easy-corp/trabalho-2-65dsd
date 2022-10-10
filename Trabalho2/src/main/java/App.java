@@ -1,19 +1,20 @@
 import java.io.IOException;
 
-import control.LerArquivo;
+import controle.ControladorMalha;
+import controle.LerArquivo;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
-public class App {
+//clean javafx:run -e -X
+public class App extends Application {
     
     public static void main(String[] args) throws IOException {
-        LerArquivo leitor = new LerArquivo("../recursos/malha-exemplo-3.txt");
+        launch(args);
+    }
 
-        for (int i = 0; i < leitor.getMalha().length; i++) {
-            for (int n = 0; n < leitor.getMalha()[i].length; n++) {
-                System.out.print(leitor.getMalha()[i][n] + " - ");
-            }
-            
-            System.out.println();
-        }
+    @Override
+    public void start(Stage inicial) throws Exception {
+        ControladorMalha controladorMalha = new ControladorMalha();
     }
     
 }

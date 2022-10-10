@@ -1,4 +1,4 @@
-package control;
+package controle;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class LerArquivo {
 
     public void ler(String caminho) throws IOException {
         //Abre o arquivo
-		File file = new File(this.getClass().getResource("").getPath() + caminho);
+        File file = new File(caminho);
 		String dados = new String(Files.readAllBytes(file.toPath()));
 
         //Define tamanho da malha de acordo com as duas primeiras linhas do arquivo
