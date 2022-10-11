@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import modelo.Casa;
 import modelo.ui.UiCasa;
+import modelo.ui.UiSimbolo;
 import visao.telaMalha;
 
 public class ControladorMalha {
@@ -32,7 +33,7 @@ public class ControladorMalha {
 
     //Le o arquivo
     public void lerArquivo() throws IOException {
-        this.leitor = new LerArquivo("recursos/malha-exemplo-3.txt");
+        this.leitor = new LerArquivo("recursos/malha-exemplo-1.txt");
 
         //Teste da leitura do arquivo
         // for (int i = 0; i < leitor.getMalha().length; i++) {
@@ -54,13 +55,14 @@ public class ControladorMalha {
             //Percorre colunas
             for (int y = 0; y < this.leitor.getHeight(); y++) {
                 //Cria casinha com base na posicao da malha vinda do arquivo
-                UiCasa casa = new UiCasa(x, y, this.telaMalha.getSize());
+                UiCasa casa = new UiCasa(x, y, this.telaMalha.getSize(), malha[x][y]);
 
-                //Preenche a casa com a cor referente
-                casa.setFill(malha[x][y].getCor());
+                //Cria Símbolo com base na posição da malha vinda do arquivo
+                UiSimbolo simbolo = new UiSimbolo(x, y, this.telaMalha.getSize(), malha[x][y]);
 
                 //Adiciona na tela
-                this.telaMalha.getGrupoalha().getChildren().add(casa);
+                this.telaMalha.getGrupoMalha().getChildren().add(casa);
+                this.telaMalha.getGrupoMalha().getChildren().add(simbolo);
             }
         }
     }

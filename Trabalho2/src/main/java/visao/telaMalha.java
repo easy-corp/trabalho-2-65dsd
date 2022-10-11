@@ -43,7 +43,7 @@ public class telaMalha {
         return this.size;
     }
 
-    public Group getGrupoalha() {
+    public Group getGrupoMalha() {
         return this.grupoMalha;
     }
 

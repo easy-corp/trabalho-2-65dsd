@@ -3,7 +3,6 @@ package controle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,9 +53,9 @@ public class LerArquivo {
         //Para cada valor inteiro ha um desenho correspondente
         this.padraoMalha.put(0, new Casa(Color.WHITE, "0"));
         this.padraoMalha.put(1, new Casa(Color.YELLOW, "UP"));
-        this.padraoMalha.put(2, new Casa(Color.BLUE, "RIGHT"));
-        this.padraoMalha.put(3, new Casa(Color.GREEN, "DOWN"));
-        this.padraoMalha.put(4, new Casa(Color.RED, "LEFT"));
+        this.padraoMalha.put(2, new Casa(Color.LIGHTBLUE, "RIGHT"));
+        this.padraoMalha.put(3, new Casa(Color.LIGHTGREEN, "DOWN"));
+        this.padraoMalha.put(4, new Casa(Color.LIGHTSALMON, "LEFT"));
         this.padraoMalha.put(5, new Casa(Color.VIOLET, "C-UP"));
         this.padraoMalha.put(6, new Casa(Color.VIOLET, "C-RIGHT"));
         this.padraoMalha.put(7, new Casa(Color.VIOLET, "C-DOWN"));
