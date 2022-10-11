@@ -23,6 +23,7 @@ public class UiCasa extends Rectangle {
 
         //Preenche a casa com a cor referente
         setFill(this.casa.getCor());
+        setStyle("-fx-stroke: black; -fx-stroke-width: 1;");
     }
 
 }

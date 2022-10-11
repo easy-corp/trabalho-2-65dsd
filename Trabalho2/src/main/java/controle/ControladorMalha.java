@@ -33,19 +33,22 @@ public class ControladorMalha {
 
     //Le o arquivo
     public void lerArquivo() throws IOException {
-        this.leitor = new LerArquivo("recursos/malha-exemplo-1.txt");
-
-        //Teste da leitura do arquivo
-        // for (int i = 0; i < leitor.getMalha().length; i++) {
-        //     for (int n = 0; n < leitor.getMalha()[i].length; n++) {
-        //         System.out.print(leitor.getMalha()[i][n] + " - ");
-        //     }
-            
-        //     System.out.println();
-        // }
+        this.leitor = new LerArquivo("recursos/malha-exemplo-3.txt");
 
         this.telaMalha = new telaMalha(this.leitor.getWidth(), this.leitor.getHeight());
         geraMalha(leitor.getMalha());
+
+        //Imprime entradas
+        System.out.println("---- Entradas ----");
+        for (int[] i : this.leitor.getEntradas()) {
+            System.out.println(i[0] + " - " + i[1]);
+        }
+
+        //Imprime saidas
+        System.out.println("---- Saidas ----");
+        for (int[] i : this.leitor.getSaidas()) {
+            System.out.println(i[0] + " - " + i[1]);
+        }
     }
 
     //Gera a malha na tela
