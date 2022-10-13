@@ -32,7 +32,9 @@ public class telaMalha {
         this.malha.setPrefSize((width * size), (heigth * size));
         this.malha.setAlignment(Pos.CENTER);
 
-        this.malha.getChildren().addAll(this.grupoMalha, this.grupoCarros);
+        this.grupoMalha.getChildren().add(this.grupoCarros);
+        
+        this.malha.getChildren().add(this.grupoMalha);
 
         root.getChildren().addAll(this.malha);
 

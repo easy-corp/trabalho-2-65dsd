@@ -1,7 +1,10 @@
-controle\LerArquivo.class
+controle\Malha.class
 modelo\ui\UiCasa.class
+modelo\ui\UiCarro.class
 modelo\ui\UiSimbolo.class
 visao\telaMalha.class
 App.class
 modelo\Casa.class
 controle\ControladorMalha.class
+controle\LeitorArquivo.class
+modelo\Carro.class

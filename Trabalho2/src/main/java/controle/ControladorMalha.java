@@ -1,10 +1,13 @@
 package controle;
 
 import java.io.IOException;
+import java.util.Random;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import modelo.Carro;
 import modelo.Casa;
+import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;
 import modelo.ui.UiSimbolo;
 import visao.telaMalha;
@@ -12,11 +15,17 @@ import visao.telaMalha;
 public class ControladorMalha {
 
     private telaMalha telaMalha;
-    private LerArquivo leitor;
+    private Malha malha;
     
     public ControladorMalha() throws IOException {
+        this.malha = Malha.getInstance();
+
         lerArquivo();
         iniciarTela();
+        spawnarCarro();
+
+        //TESTE//
+        movimentarCarro(7, 8);
     }
     
     //Abre a tela
@@ -33,30 +42,18 @@ public class ControladorMalha {
 
     //Le o arquivo
     public void lerArquivo() throws IOException {
-        this.leitor = new LerArquivo("recursos/malha-exemplo-3.txt");
+        LeitorArquivo leitor = new LeitorArquivo("recursos/malha-exemplo-3.txt");
 
-        this.telaMalha = new telaMalha(this.leitor.getWidth(), this.leitor.getHeight());
-        geraMalha(leitor.getMalha());
-
-        //Imprime entradas
-        System.out.println("---- Entradas ----");
-        for (int[] i : this.leitor.getEntradas()) {
-            System.out.println(i[0] + " - " + i[1]);
-        }
-
-        //Imprime saidas
-        System.out.println("---- Saidas ----");
-        for (int[] i : this.leitor.getSaidas()) {
-            System.out.println(i[0] + " - " + i[1]);
-        }
+        this.telaMalha = new telaMalha(this.malha.getWidth(), this.malha.getHeight());
+        geraMalha(this.malha.getMalha());
     }
 
     //Gera a malha na tela
     public void geraMalha(Casa[][] malha) {
         //Percorre linhas
-        for (int x = 0; x < this.leitor.getWidth(); x++) {
+        for (int x = 0; x < this.malha.getWidth(); x++) {
             //Percorre colunas
-            for (int y = 0; y < this.leitor.getHeight(); y++) {
+            for (int y = 0; y < this.malha.getHeight(); y++) {
                 //Cria casinha com base na posicao da malha vinda do arquivo
                 UiCasa casa = new UiCasa(x, y, this.telaMalha.getSize(), malha[x][y]);
 
@@ -68,6 +65,33 @@ public class ControladorMalha {
                 this.telaMalha.getGrupoMalha().getChildren().add(simbolo);
             }
         }
+    }
+
+    //Insere um carro aleatoriamente em uma das entradas
+    public void spawnarCarro() {
+        //Recupera uma posicao aleatoria dentre as entradas
+        int posSpawn = new Random().nextInt(this.malha.getPosEntradas().size());
+        int[] posAleatoria = this.malha.getPosEntradas().get(posSpawn);
+
+        //Recupera a posicao a qual o carro esta virado
+        String posicao = this.malha.getMalha()[posAleatoria[0]][posAleatoria[1]].getSimbolo();
+
+        //Cria o carro
+        Carro carro = new Carro(posAleatoria[0], posAleatoria[1], posicao);
+        UiCarro uiCarro = new UiCarro(carro, this.telaMalha.getSize());
+
+        //Adiciona o carro na tela
+        this.telaMalha.getGrupoCarros().getChildren().add(uiCarro);
+
+        //Adiciona o carro na lista para manipular
+        this.malha.addCarro(uiCarro);
+    }
+
+    //Movimentacao do carro
+    public void movimentarCarro(int x, int y) {
+        UiCarro carro = this.malha.getCarros().get(0);
+
+        carro.mover(x, y, this.malha.getMalha()[x][y].getSimbolo());
     }
 
 }
