@@ -5,8 +5,9 @@ do curso de Engenharia de Software da Universidade do Estado de Santa Catarina.
 Alunos: Gabriel Dolzan, Luis Felipe da Silva e Murilo Goedert.
 
 # Instruções de Execução
-Para desenvolvimento do projeto, foi utilizada a linguagem Java com a
-biblioteca JavaFX. Para facilitar todo o processo, utiliza-
-se o Maven para baixar todas as dependências necessárias.
+Para desenvolvimento do projeto, foi utilizada a linguagem Java com a biblioteca JavaFX. Para facilitar 
+todo o processo, utiliza-se o Maven para baixar todas as dependências necessárias.
 
-Para executar o projeto selecione a opção “Run as Maven Build”, o projeto não executará se for selecionada a opção “Run as Java Application”, diferentes IDE´s possuem diferentes formas de selecionar essas opções. No parâmetro "goals", preencha a seguinte informação: clean javafx:run -e -X.
+Para executar o projeto selecione a opção “Run as Maven Build”, o projeto não executará se for selecionada 
+a opção “Run as Java Application”, diferentes IDE´s possuem diferentes formas de selecionar essas opções. 
+No parâmetro "goals", preencha a seguinte informação: clean javafx:run -e -X.
