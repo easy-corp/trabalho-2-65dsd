@@ -76,4 +76,24 @@ public class Malha {
         return this.carros;
     }
 
+    /**
+     * Calcula a proxima coordenada
+     * @param x
+     * @param y
+     * @param direcao
+     * @return int[]
+     */
+    public int[] getProximaCasa(int x, int y, String direcao) {
+        switch (direcao) {
+            case "UP":
+                return new int[] {x-1, y};
+            case "DOWN":
+                return new int[] {x+1, y};
+            case "LEFT":
+                return new int[] {x, y-1};
+        }
+
+        return new int[] {x, y+1};
+    }
+
 }

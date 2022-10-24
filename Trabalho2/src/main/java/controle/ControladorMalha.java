@@ -16,18 +16,23 @@ public class ControladorMalha {
 
     private telaMalha telaMalha;
     private Malha malha;
-    
+
     public ControladorMalha() throws IOException {
         this.malha = Malha.getInstance();
 
         lerArquivo();
         iniciarTela();
-        spawnarCarro();
+
+        // spawna em entradas fixas por enquanto
+        spawnarCarro(0);
+        spawnarCarro(1);
+        spawnarCarro(2);
+        spawnarCarro(3);
 
         //TESTE//
-        movimentarCarro(7, 8);
+        //movimentarCarro(7, 8);
     }
-    
+
     //Abre a tela
     public void iniciarTela() {
         Scene cena = new Scene(this.telaMalha.createContent());
@@ -67,10 +72,10 @@ public class ControladorMalha {
         }
     }
 
-    //Insere um carro aleatoriamente em uma das entradas
-    public void spawnarCarro() {
+    //Insere um carro em uma das entradas
+    public void spawnarCarro(int posSpawn) {
         //Recupera uma posicao aleatoria dentre as entradas
-        int posSpawn = new Random().nextInt(this.malha.getPosEntradas().size());
+        //int posSpawn = new Random().nextInt(this.malha.getPosEntradas().size());
         int[] posAleatoria = this.malha.getPosEntradas().get(posSpawn);
 
         //Recupera a posicao a qual o carro esta virado
@@ -85,6 +90,9 @@ public class ControladorMalha {
 
         //Adiciona o carro na lista para manipular
         this.malha.addCarro(uiCarro);
+
+        // inicia a thread do carro
+        carro.start();
     }
 
     //Movimentacao do carro
