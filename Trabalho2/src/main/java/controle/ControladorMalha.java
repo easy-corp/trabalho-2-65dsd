@@ -1,20 +1,21 @@
 package controle;
 
 import java.io.IOException;
-import java.util.Random;
 
+import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import modelo.Carro;
 import modelo.Casa;
+import modelo.Casa.TipoCasa;
 import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;
 import modelo.ui.UiSimbolo;
-import visao.telaMalha;
+import visao.TelaMalha;
 
 public class ControladorMalha {
 
-    private telaMalha telaMalha;
+    private TelaMalha telaMalha;
     private Malha malha;
 
     public ControladorMalha() throws IOException {
@@ -29,8 +30,6 @@ public class ControladorMalha {
         spawnarCarro(2);
         spawnarCarro(3);
 
-        //TESTE//
-        //movimentarCarro(7, 8);
     }
 
     //Abre a tela
@@ -47,9 +46,9 @@ public class ControladorMalha {
 
     //Le o arquivo
     public void lerArquivo() throws IOException {
-        LeitorArquivo leitor = new LeitorArquivo("recursos/malha-exemplo-3.txt");
+        new LeitorArquivo("recursos/malha-exemplo-3.txt");
 
-        this.telaMalha = new telaMalha(this.malha.getWidth(), this.malha.getHeight());
+        this.telaMalha = new TelaMalha(this.malha.getWidth(), this.malha.getHeight());
         geraMalha(this.malha.getMalha());
     }
 
@@ -60,10 +59,10 @@ public class ControladorMalha {
             //Percorre colunas
             for (int y = 0; y < this.malha.getHeight(); y++) {
                 //Cria casinha com base na posicao da malha vinda do arquivo
-                UiCasa casa = new UiCasa(x, y, this.telaMalha.getSize(), malha[x][y]);
+                UiCasa casa = new UiCasa(new Point2D(x, y), this.telaMalha.getSize(), malha[x][y]);
 
                 //Cria Símbolo com base na posição da malha vinda do arquivo
-                UiSimbolo simbolo = new UiSimbolo(x, y, this.telaMalha.getSize(), malha[x][y]);
+                UiSimbolo simbolo = new UiSimbolo(new Point2D(x, y), this.telaMalha.getSize(), malha[x][y]);
 
                 //Adiciona na tela
                 this.telaMalha.getGrupoMalha().getChildren().add(casa);
@@ -76,13 +75,13 @@ public class ControladorMalha {
     public void spawnarCarro(int posSpawn) {
         //Recupera uma posicao aleatoria dentre as entradas
         //int posSpawn = new Random().nextInt(this.malha.getPosEntradas().size());
-        int[] posAleatoria = this.malha.getPosEntradas().get(posSpawn);
+        Point2D posAleatoria = this.malha.getPosEntradas().get(posSpawn);
 
         //Recupera a posicao a qual o carro esta virado
-        String posicao = this.malha.getMalha()[posAleatoria[0]][posAleatoria[1]].getSimbolo();
+        TipoCasa direcao = this.malha.getCasa(posAleatoria).getTipo();
 
         //Cria o carro
-        Carro carro = new Carro(posAleatoria[0], posAleatoria[1], posicao);
+        Carro carro = new Carro(posAleatoria, direcao);
         UiCarro uiCarro = new UiCarro(carro, this.telaMalha.getSize());
 
         //Adiciona o carro na tela
@@ -93,13 +92,6 @@ public class ControladorMalha {
 
         // inicia a thread do carro
         carro.start();
-    }
-
-    //Movimentacao do carro
-    public void movimentarCarro(int x, int y) {
-        UiCarro carro = this.malha.getCarros().get(0);
-
-        carro.mover(x, y, this.malha.getMalha()[x][y].getSimbolo());
     }
 
 }

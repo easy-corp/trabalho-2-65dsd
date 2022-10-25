@@ -2,10 +2,11 @@ package modelo.ui;
 
 import java.io.File;
 
-import controle.Malha;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import modelo.Carro;
+import modelo.Casa.TipoCasa;
 
 public class UiCarro extends ImageView {
 
@@ -22,7 +23,7 @@ public class UiCarro extends ImageView {
 		setFitWidth(this.telaSize);
 
         //Altera a posicao para formar o tabuleiro
-        relocate((this.carro.getPosicao()[1] * this.telaSize) , (this.carro.getPosicao()[0] * this.telaSize));
+        relocate((this.carro.getPosicao().getY() * this.telaSize) , (this.carro.getPosicao().getX() * this.telaSize));
 
         //Define a imagem
         Image img = new Image(new File("recursos/carros/" + this.carro.getDirecao() + ".png").toURI().toString());
@@ -30,16 +31,15 @@ public class UiCarro extends ImageView {
     }
 
     //Move o carro
-    public void mover(int x, int y, String direcao) {
-        this.carro.mover(x, y, direcao);
-
+    public void mover(Point2D where, TipoCasa direcao) {
+        this.carro.mover(where, direcao);
         atualizarPosicao();
     }
 
     //Atualiza imagem e posicao do carro
     private void atualizarPosicao() {
         //Altera a posicao para formar o tabuleiro
-        relocate((this.carro.getPosicao()[1] * this.telaSize) , (this.carro.getPosicao()[0] * this.telaSize));
+        relocate((this.carro.getPosicao().getY() * this.telaSize) , (this.carro.getPosicao().getX() * this.telaSize));
 
         //Define a imagem
         Image img = new Image(new File("recursos/carros/" + this.carro.getDirecao() + ".png").toURI().toString());

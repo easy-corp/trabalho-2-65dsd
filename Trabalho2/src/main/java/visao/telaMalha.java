@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
-public class telaMalha {
+public class TelaMalha {
 
     private final int size = 25;
 	private final int width;
@@ -15,7 +15,7 @@ public class telaMalha {
     private Group grupoMalha;
     private Group grupoCarros; 
 
-    public telaMalha(int width, int height) {
+    public TelaMalha(int width, int height) {
         this.width = width;
         this.heigth = height;
 

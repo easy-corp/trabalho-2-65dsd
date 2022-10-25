@@ -1,37 +1,39 @@
 package modelo;
 
 import controle.Malha;
+import javafx.geometry.Point2D;
+import modelo.Casa.TipoCasa;
 import modelo.ui.UiCarro;
 
 public class Carro extends Thread {
 
-    private int[] posicao;       //Posicionamento do carro, X e Y, respectivamente
-    private String direcao;      //Direcao para onde o carro esta indo
+    private Point2D posicao;       //Posicionamento do carro, X e Y, respectivamente
+    private TipoCasa direcao;      //Direcao para onde o carro esta indo
     private UiCarro ui;          //UI do carro
 
-    public Carro(int x, int y, String direcao) {
-        mover(x, y, direcao);
+    public Carro(Point2D spawnPoint, TipoCasa direcao) {
+        mover(spawnPoint, direcao);
     }
 
-    public int[] getPosicao() {
+    public Point2D getPosicao() {
         return this.posicao;
     }
 
-    public void setDirecao(String direcao) {
+    public void setDirecao(TipoCasa direcao) {
         //Se o carro estiver em um cruzamento, nao vamos alterar a sua posicao
-        //Cruzamentos possuem C em sua descricao na Malha
-        if (!direcao.contains("C")) {
+        //Cruzamentos possuem CRUZAMENTO em sua descricao na Malha
+        if (!direcao.name().contains("CRUZAMENTO")) {
             this.direcao = direcao;
         }
     }
 
-    public String getDirecao() {
+    public TipoCasa getDirecao() {
         return this.direcao;
     }
 
     //Movimento do carro
-    public void mover(int x, int y, String direcao) {
-        this.posicao = new int[] {x, y};
+    public void mover(Point2D posicao, TipoCasa direcao) {
+        this.posicao = posicao;
         this.setDirecao(direcao);
     }
 
@@ -48,16 +50,18 @@ public class Carro extends Thread {
         try {
             // por enquanto vai ate o cruzamento
             // nao trata carro na mesma casa
-
             Malha malha = Malha.getInstance();
-            int[] p = malha.getProximaCasa(this.getPosicao()[0], this.getPosicao()[1], this.getDirecao());
-            Casa casa = malha.getMalha()[p[0]][p[1]];
+            Casa casaAtual = malha.getCasa(this.getPosicao());
+            Point2D proximaPosicao = malha.getProximaPosicao(getPosicao(), getDirecao());
+            Casa proximaCasa = malha.getCasa(proximaPosicao);
 
-            while (!casa.getSimbolo().contains("C")) {
-                ui.mover(p[0], p[1], this.getDirecao());
-                p = malha.getProximaCasa(p[0], p[1], this.getDirecao());
-                casa = malha.getMalha()[p[0]][p[1]];
-
+            while (/*!casa.getTipo().name().contains("CRUZAMENTO")*/ true) {
+                proximaCasa.acquire();
+                casaAtual.release();
+                ui.mover(proximaPosicao, this.getDirecao());
+                casaAtual = proximaCasa;
+                proximaPosicao = malha.getProximaPosicao(proximaPosicao, this.getDirecao());
+                proximaCasa = malha.getCasa(proximaPosicao);
                 sleep(1000);
             }
         } catch (Exception e) {
