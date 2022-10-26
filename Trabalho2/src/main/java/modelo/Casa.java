@@ -36,7 +36,7 @@ public class Casa {
         this.mutex.acquire();
 
         //Para teste
-         this.ui.setFill(Color.BLACK);
+        //  this.ui.setFill(Color.BLACK);
     }
 
     public UiCasa getUi() {
@@ -51,7 +51,7 @@ public class Casa {
         this.mutex.release();
         
         //Para teste
-        this.ui.setFill(Color.GREEN);
+        // this.ui.setFill(Color.GREEN);
     }
 
     public void acquireCruzamento() throws InterruptedException{

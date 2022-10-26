@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javafx.application.Platform;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
 import modelo.Casa;
 import modelo.Casa.TipoCasa;
@@ -21,7 +24,10 @@ public class Malha {
     private List<Point2D> posSaidas = new ArrayList<>(); // Lista das posições de saida
     private List<UiCarro> carros = new ArrayList<>(); // Lista dos carros inseridos
     private List<Casa> cruzamentos = new ArrayList<>(); // Lista dos carros inseridos
-    private HashMap<TipoCasa, List<List<TipoCasa>>> movimentosPossiveisCruzamento = this.criaMovimentosPossiveisCruzamento();
+    private HashMap<TipoCasa, List<List<TipoCasa>>> movimentosPossiveisCruzamento = this
+            .criaMovimentosPossiveisCruzamento();
+    private HashMap<Point2D, UiCarro> casaOcupada = new HashMap<>();
+    private IntegerProperty contadorCarros = new SimpleIntegerProperty();
 
     private Malha() {
     }
@@ -58,8 +64,8 @@ public class Malha {
         return this.malha;
     }
 
-    public Casa getCasa(Point2D where){
-        return this.malha[(int)where.getX()][(int)where.getY()];
+    public Casa getCasa(Point2D where) {
+        return this.malha[(int) where.getX()][(int) where.getY()];
     }
 
     public void addPosEntrada(Point2D entrada) {
@@ -80,13 +86,34 @@ public class Malha {
 
     public void addCarro(UiCarro carro) {
         this.carros.add(carro);
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                contadorCarros.set(carros.size());
+            }
+
+        });
+    }
+
+    public void removeCarro(UiCarro carro) {
+        this.carros.remove(carro);
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                contadorCarros.set(carros.size());
+            }
+
+        });
+
     }
 
     public List<UiCarro> getCarros() {
         return this.carros;
     }
 
-    public Casa getProximaCasa(Point2D posicaoAtual, TipoCasa direcao){
+    public Casa getProximaCasa(Point2D posicaoAtual, TipoCasa direcao) {
         return this.getCasa(this.getProximaPosicao(posicaoAtual, direcao));
     }
 
@@ -98,8 +125,13 @@ public class Malha {
         return this.cruzamentos;
     }
 
+    public IntegerProperty getContadorCarros() {
+        return this.contadorCarros;
+    }
+
     /**
      * Retorna a proxima posição para um carro na malha
+     * 
      * @param posicaoAtual
      * @param direcao
      * @return Point2D
@@ -123,10 +155,10 @@ public class Malha {
         }
     }
 
-    private HashMap<TipoCasa, List<List<TipoCasa>>> criaMovimentosPossiveisCruzamento(){
+    private HashMap<TipoCasa, List<List<TipoCasa>>> criaMovimentosPossiveisCruzamento() {
         HashMap<TipoCasa, List<List<TipoCasa>>> listaMovimentos = new HashMap<TipoCasa, List<List<TipoCasa>>>();
 
-        //Vindo da direita para esquerda
+        // Vindo da direita para esquerda
         List<List<TipoCasa>> movimentosLeft = new ArrayList<>();
 
         List<TipoCasa> movimentosLeft1 = new ArrayList<>();
@@ -149,7 +181,7 @@ public class Malha {
 
         listaMovimentos.put(TipoCasa.TIPO_LEFT, movimentosLeft);
 
-        //Vindo da esquerda para direita
+        // Vindo da esquerda para direita
         List<List<TipoCasa>> movimentosRight = new ArrayList<>();
 
         List<TipoCasa> movimentosRight1 = new ArrayList<>();
@@ -172,7 +204,7 @@ public class Malha {
 
         listaMovimentos.put(TipoCasa.TIPO_RIGHT, movimentosRight);
 
-        //Vindo de baixo para cima
+        // Vindo de baixo para cima
         List<List<TipoCasa>> movimentosUp = new ArrayList<>();
 
         List<TipoCasa> movimentosUp1 = new ArrayList<>();
@@ -195,7 +227,7 @@ public class Malha {
 
         listaMovimentos.put(TipoCasa.TIPO_UP, movimentosUp);
 
-        //Vindo de cima para baixo
+        // Vindo de cima para baixo
         List<List<TipoCasa>> movimentosDown = new ArrayList<>();
 
         List<TipoCasa> movimentosDown1 = new ArrayList<>();
@@ -223,6 +255,28 @@ public class Malha {
 
     public HashMap<TipoCasa, List<List<TipoCasa>>> getMovimentosPossiveisCruzamento() {
         return this.movimentosPossiveisCruzamento;
+    }
+
+    public synchronized boolean ocupaCasa(List<Point2D> destino, UiCarro ui) {
+        // Verifica se todas as posicoes de destino estao livres
+        for (Point2D d : destino) {
+            if (casaOcupada.containsKey(d)) {
+                return false;
+            }
+        }
+
+        // Ocupa todas as posicoes
+        for (Point2D d : destino) {
+            casaOcupada.put(d, ui);
+        }
+
+        return true;
+    }
+
+    public synchronized void liberaCasa(List<Point2D> origem) {
+        for (Point2D o : origem) {
+            casaOcupada.remove(o);
+        }
     }
 
 }

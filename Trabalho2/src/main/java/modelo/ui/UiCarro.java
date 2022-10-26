@@ -20,45 +20,63 @@ public class UiCarro extends ImageView {
 
         this.carro.setUi(this);
 
-        //Define tamanho com base no atributo do tamanho
-		setFitHeight(this.telaSize);
-		setFitWidth(this.telaSize);
+        // Define tamanho com base no atributo do tamanho
+        setFitHeight(this.telaSize);
+        setFitWidth(this.telaSize);
 
-        //Altera a posicao para formar o tabuleiro
-        relocate((this.carro.getPosicao().getY() * this.telaSize), (this.carro.getPosicao().getX() * this.telaSize));
+        // Altera a posicao para formar o tabuleiro
+        Platform.runLater(new Runnable() {
 
-        //Define a imagem
-        Image img = new Image(new File("recursos/carros/" + this.carro.getDirecao() + ".png").toURI().toString());
-        setImage(img);
+            @Override
+            public void run() {
+                relocate((carro.getPosicao().getY() * telaSize), (carro.getPosicao().getX() * telaSize));
+
+                // Define a imagem
+                Image img = new Image(new File("recursos/carros/" + carro.getDirecao() + ".png").toURI().toString());
+                setImage(img);
+            }
+
+        });
+
     }
 
-    //Move o carro
+    // Move o carro
     public void mover(Point2D where, TipoCasa direcao) {
         this.carro.mover(where, direcao);
         atualizarPosicao();
     }
 
-    //Atualiza imagem e posicao do carro
+    // Atualiza imagem e posicao do carro
     private void atualizarPosicao() {
-        //Altera a posicao para formar o tabuleiro
+        // Altera a posicao para formar o tabuleiro
         Platform.runLater(new Runnable() {
 
             @Override
             public void run() {
-                relocate((carro.getPosicao().getY() * telaSize) , (carro.getPosicao().getX() * telaSize));
+                relocate((carro.getPosicao().getY() * telaSize), (carro.getPosicao().getX() * telaSize));
+
+                // Define a imagem
+                Image img = new Image(
+                        new File("recursos/carros/" + carro.getDirecao() + ".png").toURI().toString());
+                setImage(img);
+            }
+
+        });
+
+    }
+
+    public void finalizarCarro() {
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                carro = null;
+                telaSize = 0;
+                setImage(null);
             }
             
         });
 
-        //Define a imagem
-        Image img = new Image(new File("recursos/carros/" + this.carro.getDirecao() + ".png").toURI().toString());
-        setImage(img);
-    }
-
-    public void finalizarCarro() {
-        this.carro = null;
-        this.telaSize = 0;
-        setImage(null);
     }
 
 }

@@ -24,7 +24,7 @@ public class TelaMalha {
     }
 
     //O conteudo da tela
-    public Parent createContent() {
+    public Pane createContent() {
         Pane root = new Pane();
 
         //Box principal

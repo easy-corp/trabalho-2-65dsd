@@ -13,6 +13,7 @@ import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;
 import modelo.ui.UiSimbolo;
 import visao.TelaMalha;
+import visao.TelaSimulador;
 
 public class ControladorMalha {
 
@@ -42,7 +43,7 @@ public class ControladorMalha {
 
     // Abre a tela
     public void iniciarTela() {
-        Scene cena = new Scene(this.telaMalha.createContent());
+        Scene cena = new Scene(new TelaSimulador(this.telaMalha));
 
         stage.setTitle("Malha de trânsito");
         stage.setScene(cena);
