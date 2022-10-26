@@ -1,6 +1,8 @@
 package modelo;
 
+import java.util.Random;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import javafx.scene.paint.Color;
 import modelo.ui.UiCasa;
@@ -13,11 +15,13 @@ public class Casa {
     private Semaphore mutex;
     private Semaphore mutexCruzamento;
     private UiCasa ui;
+    private Random random;
 
     public Casa(Color cor, TipoCasa tipo) {
         this.cor = cor;
         this.tipo = tipo;
         this.mutex = new Semaphore(1);
+        this.random = new Random();
     }
 
     public Color getCor() {
@@ -32,7 +36,7 @@ public class Casa {
         this.mutex.acquire();
 
         //Para teste
-        // this.ui.setFill(Color.BLACK);
+         this.ui.setFill(Color.BLACK);
     }
 
     public UiCasa getUi() {
@@ -45,9 +49,9 @@ public class Casa {
 
     public void releaseCasa() {
         this.mutex.release();
-
+        
         //Para teste
-        // this.ui.setFill(Color.GREEN);
+        this.ui.setFill(Color.GREEN);
     }
 
     public void acquireCruzamento() throws InterruptedException{

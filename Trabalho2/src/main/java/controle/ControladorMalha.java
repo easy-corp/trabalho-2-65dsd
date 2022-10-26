@@ -5,7 +5,6 @@ import java.util.Random;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import modelo.Carro;
 import modelo.Casa;
@@ -30,15 +29,13 @@ public class ControladorMalha {
         iniciarTela();
 
         //Spawna carros em uma das entradas aleatoriamente
-        // for () {}
-        spawnarCarro(0);
-        spawnarCarro(1);
-        spawnarCarro(2);
-        spawnarCarro(3);
-        spawnarCarro(4);
-        spawnarCarro(5);
+        for (int i = 0; i < 20; i ++) {
+            spawnarCarro(random.nextInt(malha.getPosEntradas().size()));
+        }
 
-        System.out.println("----------");
+        for (Point2D p : this.malha.getPosSaidas()) {
+            System.out.println(p);
+        }
 
     }
 
@@ -54,7 +51,7 @@ public class ControladorMalha {
 
     // Le o arquivo
     public void lerArquivo() throws IOException {
-        new LeitorArquivo("recursos/malha-exemplo-3.txt");
+        new LeitorArquivo("recursos/malha-exemplo-2.txt");
 
         this.telaMalha = new TelaMalha(this.malha.getWidth(), this.malha.getHeight());
         geraMalha(this.malha.getMalha());

@@ -55,4 +55,10 @@ public class UiCarro extends ImageView {
         setImage(img);
     }
 
+    public void finalizarCarro() {
+        this.carro = null;
+        this.telaSize = 0;
+        setImage(null);
+    }
+
 }

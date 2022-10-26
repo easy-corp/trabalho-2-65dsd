@@ -8,6 +8,7 @@ import java.util.concurrent.Semaphore;
 
 import controle.Malha;
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import modelo.Casa.TipoCasa;
 import modelo.ui.UiCarro;
 
@@ -16,11 +17,14 @@ public class Carro extends Thread {
     private Point2D posicao; // Posicionamento do carro, X e Y, respectivamente
     private TipoCasa direcao; // Direcao para onde o carro esta indo
     private UiCarro ui; // UI do carro
+    private Malha malha;
     private HashMap<TipoCasa, List<List<TipoCasa>>> listaMovimentos;
     private Random random = new Random();
 
     public Carro(Point2D spawnPoint, TipoCasa direcao) {
         mover(spawnPoint, direcao);
+
+        this.malha = Malha.getInstance();
     }
 
     public Point2D getPosicao() {
@@ -71,6 +75,7 @@ public class Carro extends Thread {
                     //Casa antes de entrar no cruzamento;
                     Casa casaInicial = casaAtual;
 
+                    //Dentro desse metodo ha um tryacquires
                     proximaCasa.acquireCruzamento();
                     cruzamentoAtual = proximaCasa.getMutexCruzamento();
                     
@@ -110,8 +115,8 @@ public class Carro extends Thread {
 
                         //Entrou no cruzamento
                         ui.mover(proximaPosicaoMovimento, casaMover.getTipo());
-                        casaInicial.releaseCasa();
                         Thread.sleep(300);
+                        casaInicial.releaseCasa();
                     }
 
                     proximaPosicao = malha.getProximaPosicao(this.getPosicao(), this.getDirecao());
@@ -122,16 +127,36 @@ public class Carro extends Thread {
                 } else {
                     proximaCasa.acquireCasa();
                     casaAtual.releaseCasa();
-                    ui.mover(proximaPosicao, this.getDirecao());
-                    casaAtual = proximaCasa;
-                    proximaPosicao = malha.getProximaPosicao(proximaPosicao, this.getDirecao());
-                    proximaCasa = malha.getCasa(proximaPosicao);
-                    sleep(300);
+
+                    if (!verificaFim(this, proximaPosicao)) {
+                        ui.mover(proximaPosicao, this.getDirecao());
+                        casaAtual = proximaCasa;
+                        proximaPosicao = malha.getProximaPosicao(proximaPosicao, this.getDirecao());
+                        proximaCasa = malha.getCasa(proximaPosicao);
+                    } else {
+                        proximaCasa.releaseCasa();
+
+                        return;
+                    }
+                    
+                    sleep(100);
                 }
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private boolean verificaFim(Carro carro, Point2D posicao) throws InterruptedException {
+        if (this.malha.getPosSaidas().contains(posicao)) {
+            this.ui.finalizarCarro();
+            this.malha.getCarros().remove(this.getUi());
+            carro = null;
+
+            return true;
+        }
+        
+        return false;
     }
 
 }
