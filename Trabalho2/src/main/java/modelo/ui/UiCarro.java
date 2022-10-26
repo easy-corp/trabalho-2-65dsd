@@ -2,6 +2,7 @@ package modelo.ui;
 
 import java.io.File;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -16,14 +17,14 @@ public class UiCarro extends ImageView {
     public UiCarro(Carro carro, int telaSize) {
         this.carro = carro;
         this.telaSize = telaSize;
-        carro.setUi(this);
+
 
         //Define tamanho com base no atributo do tamanho
 		setFitHeight(this.telaSize);
 		setFitWidth(this.telaSize);
 
         //Altera a posicao para formar o tabuleiro
-        relocate((this.carro.getPosicao().getY() * this.telaSize) , (this.carro.getPosicao().getX() * this.telaSize));
+        relocate((this.carro.getPosicao().getY() * this.telaSize), (this.carro.getPosicao().getX() * this.telaSize));
 
         //Define a imagem
         Image img = new Image(new File("recursos/carros/" + this.carro.getDirecao() + ".png").toURI().toString());
@@ -39,7 +40,14 @@ public class UiCarro extends ImageView {
     //Atualiza imagem e posicao do carro
     private void atualizarPosicao() {
         //Altera a posicao para formar o tabuleiro
-        relocate((this.carro.getPosicao().getY() * this.telaSize) , (this.carro.getPosicao().getX() * this.telaSize));
+        Platform.runLater(new Runnable() {
+
+            @Override
+            public void run() {
+                relocate((carro.getPosicao().getY() * telaSize) , (carro.getPosicao().getX() * telaSize));
+            }
+            
+        });
 
         //Define a imagem
         Image img = new Image(new File("recursos/carros/" + this.carro.getDirecao() + ".png").toURI().toString());
