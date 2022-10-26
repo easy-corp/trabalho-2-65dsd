@@ -18,6 +18,7 @@ public class UiCarro extends ImageView {
         this.carro = carro;
         this.telaSize = telaSize;
 
+        this.carro.setUi(this);
 
         //Define tamanho com base no atributo do tamanho
 		setFitHeight(this.telaSize);

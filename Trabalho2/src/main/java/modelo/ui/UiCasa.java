@@ -28,4 +28,8 @@ public class UiCasa extends Rectangle {
         setStyle("-fx-stroke: black; -fx-stroke-width: 1;");
     }
 
+    public Point2D getPosicao() {
+        return this.posicao;
+    }
+
 }

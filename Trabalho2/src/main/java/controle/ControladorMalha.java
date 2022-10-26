@@ -1,9 +1,11 @@
 package controle;
 
 import java.io.IOException;
+import java.util.Random;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import modelo.Carro;
 import modelo.Casa;
@@ -18,6 +20,7 @@ public class ControladorMalha {
     private TelaMalha telaMalha;
     private Malha malha;
     private Stage stage;
+    private Random random = new Random();
 
     public ControladorMalha(Stage stage) throws IOException {
         this.malha = Malha.getInstance();
@@ -26,13 +29,16 @@ public class ControladorMalha {
         lerArquivo();
         iniciarTela();
 
-        // spawna em entradas fixas por enquanto
+        //Spawna carros em uma das entradas aleatoriamente
+        // for () {}
         spawnarCarro(0);
         spawnarCarro(1);
         spawnarCarro(2);
         spawnarCarro(3);
         spawnarCarro(4);
         spawnarCarro(5);
+
+        System.out.println("----------");
 
     }
 

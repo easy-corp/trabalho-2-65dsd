@@ -30,7 +30,9 @@ public class Casa {
 
     public void acquireCasa() throws InterruptedException {
         this.mutex.acquire();
-        //  this.ui.setFill(Color.BLACK);
+
+        //Para teste
+        // this.ui.setFill(Color.BLACK);
     }
 
     public UiCasa getUi() {
@@ -43,7 +45,9 @@ public class Casa {
 
     public void releaseCasa() {
         this.mutex.release();
-        //  this.ui.setFill(Color.GREEN);
+
+        //Para teste
+        // this.ui.setFill(Color.GREEN);
     }
 
     public void acquireCruzamento() throws InterruptedException{
@@ -82,6 +86,11 @@ public class Casa {
         TIPO_CRUZAMENTO_DOWN_RIGHT,
         TIPO_CRUZAMENTO_DOWN_LEFT
 
+    }
+
+    @Override
+    public String toString() {
+        return this.getTipo().name() + " " + this.getUi().getPosicao();
     }
 
 }

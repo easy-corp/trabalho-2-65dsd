@@ -1,12 +1,13 @@
 controle\Malha.class
 modelo\Casa$TipoCasa.class
 modelo\ui\UiCasa.class
+App.class
+modelo\Carro.class
 visao\TelaMalha.class
+modelo\ui\UiCarro$1.class
 modelo\ui\UiCarro.class
 modelo\ui\UiSimbolo.class
-App.class
 controle\Malha$1.class
 modelo\Casa.class
 controle\ControladorMalha.class
 controle\LeitorArquivo.class
-modelo\Carro.class

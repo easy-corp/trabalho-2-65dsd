@@ -20,6 +20,7 @@ public class Malha {
     private List<Point2D> posEntradas = new ArrayList<>(); // Lista das posições de entrada
     private List<Point2D> posSaidas = new ArrayList<>(); // Lista das posições de saida
     private List<UiCarro> carros = new ArrayList<>(); // Lista dos carros inseridos
+    private List<Casa> cruzamentos = new ArrayList<>(); // Lista dos carros inseridos
     private HashMap<TipoCasa, List<List<TipoCasa>>> movimentosPossiveisCruzamento = this.criaMovimentosPossiveisCruzamento();
 
     private Malha() {
@@ -87,6 +88,14 @@ public class Malha {
 
     public Casa getProximaCasa(Point2D posicaoAtual, TipoCasa direcao){
         return this.getCasa(this.getProximaPosicao(posicaoAtual, direcao));
+    }
+
+    public void addCruzamento(Casa casa) {
+        this.cruzamentos.add(casa);
+    }
+
+    public List<Casa> getCruzamento() {
+        return this.cruzamentos;
     }
 
     /**
@@ -193,12 +202,12 @@ public class Malha {
         movimentosDown1.add(TipoCasa.TIPO_DOWN);
         movimentosDown1.add(TipoCasa.TIPO_DOWN);
         movimentosDown1.add(TipoCasa.TIPO_DOWN);
-        movimentosDown.add(movimentosDown1);
+        // movimentosDown.add(movimentosDown1);
 
         List<TipoCasa> movimentosDown2 = new ArrayList<>();
         movimentosDown2.add(TipoCasa.TIPO_DOWN);
         movimentosDown2.add(TipoCasa.TIPO_LEFT);
-        movimentosDown.add(movimentosDown2);
+        // movimentosDown.add(movimentosDown2);
 
         List<TipoCasa> movimentosDown3 = new ArrayList<>();
         movimentosDown3.add(TipoCasa.TIPO_DOWN);

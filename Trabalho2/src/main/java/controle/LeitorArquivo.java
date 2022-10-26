@@ -82,6 +82,7 @@ public class LeitorArquivo {
 
     private void createSemaforosCruzamentos(Casa[][] casas) {
         List<Casa> verificados = new ArrayList<>();
+        
         for (int i = 0; i < casas.length; i++) {
             for (int j = 0; j < casas[i].length; j++) {
                 Casa casaAtual = casas[i][j];
@@ -100,6 +101,10 @@ public class LeitorArquivo {
                     verificados.addAll(casasCruzamento);
                 }
             }
+        }
+        
+        for (Casa c : verificados) {
+            this.malha.addCruzamento(c);
         }
     }
 
