@@ -31,6 +31,8 @@ public class ControladorMalha {
         //Spawna carros em uma das entradas aleatoriamente
         for (int i = 0; i < 20; i ++) {
             spawnarCarro(random.nextInt(malha.getPosEntradas().size()));
+
+            // spawnarCarro(0);
         }
 
         for (Point2D p : this.malha.getPosSaidas()) {

@@ -116,12 +116,13 @@ public class Carro extends Thread {
                         //Entrou no cruzamento
                         ui.mover(proximaPosicaoMovimento, casaMover.getTipo());
                         Thread.sleep(300);
-                        casaInicial.releaseCasa();
                     }
+                    
 
                     proximaPosicao = malha.getProximaPosicao(this.getPosicao(), this.getDirecao());
                     proximaCasa = malha.getCasa(proximaPosicao);
                     
+                    casaInicial.releaseCasa();
                     casaAtual.releaseCasa();
                     cruzamentoAtual.release();             
                 } else {
