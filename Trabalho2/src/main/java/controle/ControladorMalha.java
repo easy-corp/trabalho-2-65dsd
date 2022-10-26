@@ -53,7 +53,7 @@ public class ControladorMalha {
 
     // Le o arquivo
     public void lerArquivo() throws IOException {
-        new LeitorArquivo("recursos/malha-exemplo-2.txt");
+        new LeitorArquivo("recursos/malha-exemplo-3.txt");
 
         this.telaMalha = new TelaMalha(this.malha.getWidth(), this.malha.getHeight());
         geraMalha(this.malha.getMalha());
@@ -62,9 +62,9 @@ public class ControladorMalha {
     // Gera a malha na tela
     public void geraMalha(Casa[][] malha) {
         // Percorre linhas
-        for (int x = 0; x < this.malha.getWidth(); x++) {
+        for (int x = 0; x < this.malha.getHeight(); x++) {
             // Percorre colunas
-            for (int y = 0; y < this.malha.getHeight(); y++) {
+            for (int y = 0; y < this.malha.getWidth(); y++) {
                 // Cria casinha com base na posicao da malha vinda do arquivo
                 UiCasa casa = new UiCasa(new Point2D(x, y), this.telaMalha.getSize(), malha[y][x]);
 
