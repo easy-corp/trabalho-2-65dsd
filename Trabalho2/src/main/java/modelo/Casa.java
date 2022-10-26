@@ -3,6 +3,7 @@ package modelo;
 import java.util.concurrent.Semaphore;
 
 import javafx.scene.paint.Color;
+import modelo.ui.UiCasa;
 
 public class Casa {
 
@@ -10,6 +11,8 @@ public class Casa {
     private Color cor;
     private TipoCasa tipo;
     private Semaphore mutex;
+    private Semaphore mutexCruzamento;
+    private UiCasa ui;
 
     public Casa(Color cor, TipoCasa tipo) {
         this.cor = cor;
@@ -25,13 +28,42 @@ public class Casa {
         return this.tipo;
     }
 
-    public void acquire() throws InterruptedException{
+    public void acquireCasa() throws InterruptedException {
         this.mutex.acquire();
-        System.out.println("Acquire realizado: " + this.mutex.availablePermits());
+        //  this.ui.setFill(Color.BLACK);
     }
 
-    public void release(){
+    public UiCasa getUi() {
+        return ui;
+    }
+
+    public void setUi(UiCasa ui) {
+        this.ui = ui;
+    }
+
+    public void releaseCasa() {
         this.mutex.release();
+        //  this.ui.setFill(Color.GREEN);
+    }
+
+    public void acquireCruzamento() throws InterruptedException{
+        if(this.mutexCruzamento instanceof Semaphore){
+            this.mutexCruzamento.acquire();
+        }
+    }
+
+    public void releaseCruzamento() throws InterruptedException{
+        if(this.mutexCruzamento instanceof Semaphore){
+            this.mutexCruzamento.release();
+        }
+    }
+
+    public Semaphore getMutexCruzamento() {
+        return mutexCruzamento;
+    }
+
+    public void setMutexCruzamento(Semaphore mutexCruzamento) {
+        this.mutexCruzamento = mutexCruzamento;
     }
 
     public enum TipoCasa {

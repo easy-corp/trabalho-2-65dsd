@@ -14,13 +14,14 @@ public class UiCasa extends Rectangle {
         this.posicao = position;
         this.telaSize = telaSize;
         this.casa = casa;
+        this.casa.setUi(this);
 
         //Define tamanho com base no atributo do tamanho
         setWidth(this.telaSize);
         setHeight(this.telaSize);
 
         //Altera a posicao para formar o tabuleiro
-        relocate((this.posicao.getY() * this.telaSize) , (this.posicao.getX() * telaSize));
+        relocate((this.posicao.getX() * this.telaSize) , (this.posicao.getY() * this.telaSize));
 
         //Preenche a casa com a cor referente
         setFill(this.casa.getCor());

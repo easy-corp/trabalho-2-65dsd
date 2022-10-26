@@ -13,7 +13,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage inicial) throws Exception {
-        new ControladorMalha();
+        new ControladorMalha(inicial);
     }
     
 }

@@ -23,7 +23,7 @@ public class UiSimbolo extends ImageView {
 		setFitWidth(this.telaSize);
 
         //Altera a posicao para formar o tabuleiro
-        relocate((this.posicao.getY() * this.telaSize) , (this.posicao.getX() * telaSize));
+        relocate((this.posicao.getX() * this.telaSize) , (this.posicao.getY() * telaSize));
 
         //Define e seta a imagem
         Image img = new Image(new File("recursos/setas/" + this.casa.getTipo().name() + ".png").toURI().toString());

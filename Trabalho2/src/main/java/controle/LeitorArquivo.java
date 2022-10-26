@@ -3,8 +3,12 @@ package controle;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Semaphore;
 
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
@@ -50,29 +54,55 @@ public class LeitorArquivo {
                 // Recupera valor com base no Map de guia
                 int celula = Integer.parseInt(dadosLinha.split("	")[coluna]);
 
-                casas[linha][coluna] = this.padraoMalha.get(celula);
+                casas[linha][coluna] = new Casa(this.padraoMalha.get(celula).getCor(), this.padraoMalha.get(celula).getTipo());
 
                 // Verifica entradas
                 if (coluna == 0 && celula == 2 ||
-                        coluna == (this.malha.getHeight() - 1) && celula == 4 ||
+                        coluna == (this.malha.getWidth() - 1) && celula == 4 ||
                         linha == 0 && celula == 3 ||
-                        linha == (this.malha.getWidth() - 1) && celula == 1) {
+                        linha == (this.malha.getHeight() - 1) && celula == 1) {
                     this.malha.addPosEntrada(new Point2D(linha, coluna));
                 }
 
                 // Verifica saidas
                 if (coluna == 0 && celula == 4 ||
-                        coluna == (this.malha.getHeight() - 1) && celula == 2 ||
+                        coluna == (this.malha.getWidth() - 1) && celula == 2 ||
                         linha == 0 && celula == 1 ||
-                        linha == (this.malha.getWidth() - 1) && celula == 3) {
+                        linha == (this.malha.getHeight() - 1) && celula == 3) {
                     this.malha.addPosSaida(new Point2D(linha, coluna));
                 }
             }
         }
 
+        createSemaforosCruzamentos(casas);
+
         // Povoa o Singleton
         this.malha.setMalha(casas);
     }
+
+    private void createSemaforosCruzamentos(Casa[][] casas) {
+        List<Casa> verificados = new ArrayList<>();
+        for (int i = 0; i < casas.length; i++) {
+            for (int j = 0; j < casas[i].length; j++) {
+                Casa casaAtual = casas[i][j];
+                if(casaAtual.getTipo().name().contains("CRUZAMENTO") && !verificados.contains(casaAtual)){
+                    List<Casa> casasCruzamento = new ArrayList<>();
+                    casasCruzamento.add(casaAtual);
+                    casasCruzamento.add(casas[i][j + 1]);
+                    casasCruzamento.add(casas[i + 1][j]);
+                    casasCruzamento.add(casas[i + 1][j + 1]);
+
+                    Semaphore mutexCruzamento = new Semaphore(1);
+                    for(Casa c: casasCruzamento){
+                        c.setMutexCruzamento(mutexCruzamento);
+                    }
+
+                    verificados.addAll(casasCruzamento);
+                }
+            }
+        }
+    }
+
 
     public void padroes() {
         this.padraoMalha = new HashMap<Integer, Casa>();
