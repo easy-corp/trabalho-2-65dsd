@@ -34,8 +34,8 @@ public class LeitorArquivo {
         String dados = new String(Files.readAllBytes(file.toPath()));
 
         // Define tamanho da malha de acordo com as duas primeiras linhas do arquivo
-        this.malha.setWidth(Integer.parseInt(dados.split("\\r?\\n")[0]));
-        this.malha.setHeight(Integer.parseInt(dados.split("\\r?\\n")[1]));
+        this.malha.setWidth(Integer.parseInt(dados.split("\\r?\\n")[0])); // largura
+        this.malha.setHeight(Integer.parseInt(dados.split("\\r?\\n")[1])); // altura
 
         Casa[][] casas = new Casa[this.malha.getWidth()][this.malha.getHeight()];
 
@@ -58,17 +58,17 @@ public class LeitorArquivo {
 
                 // Verifica entradas
                 if (coluna == 0 && celula == 2 ||
-                        coluna == (this.malha.getWidth() - 1) && celula == 4 ||
+                        coluna == (this.malha.getHeight() - 1) && celula == 4 ||
                         linha == 0 && celula == 3 ||
-                        linha == (this.malha.getHeight() - 1) && celula == 1) {
+                        linha == (this.malha.getWidth() - 1) && celula == 1) {
                     this.malha.addPosEntrada(new Point2D(linha, coluna));
                 }
 
                 // Verifica saidas
                 if (coluna == 0 && celula == 4 ||
-                        coluna == (this.malha.getWidth() - 1) && celula == 2 ||
+                        coluna == (this.malha.getHeight() - 1) && celula == 2 ||
                         linha == 0 && celula == 1 ||
-                        linha == (this.malha.getHeight() - 1) && celula == 3) {
+                        linha == (this.malha.getWidth() - 1) && celula == 3) {
                     this.malha.addPosSaida(new Point2D(linha, coluna));
                 }
             }
@@ -82,7 +82,7 @@ public class LeitorArquivo {
 
     private void createSemaforosCruzamentos(Casa[][] casas) {
         List<Casa> verificados = new ArrayList<>();
-        
+
         for (int i = 0; i < casas.length; i++) {
             for (int j = 0; j < casas[i].length; j++) {
                 Casa casaAtual = casas[i][j];
@@ -102,7 +102,7 @@ public class LeitorArquivo {
                 }
             }
         }
-        
+
         for (Casa c : verificados) {
             this.malha.addCruzamento(c);
         }

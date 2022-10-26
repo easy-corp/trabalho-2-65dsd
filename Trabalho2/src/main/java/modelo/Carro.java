@@ -20,9 +20,13 @@ public class Carro extends Thread {
     private Malha malha;
     private HashMap<TipoCasa, List<List<TipoCasa>>> listaMovimentos;
     private Random random = new Random();
+    private int velocidade;
 
     public Carro(Point2D spawnPoint, TipoCasa direcao) {
         mover(spawnPoint, direcao);
+
+//        velocidade = random.nextInt(5, 10) * 100;
+        velocidade = 750;
 
         this.malha = Malha.getInstance();
     }
@@ -67,7 +71,7 @@ public class Carro extends Thread {
             Semaphore cruzamentoAtual = null;
 
             casaAtual.acquireCasa();
-            sleep(1000);
+            sleep(velocidade);
 
             while (true) {
                 //Se estiver em frente de um cruzamento
@@ -75,10 +79,6 @@ public class Carro extends Thread {
                     //Casa antes de entrar no cruzamento;
                     Casa casaInicial = casaAtual;
 
-                    //Dentro desse metodo ha um tryacquires
-                    proximaCasa.acquireCruzamento();
-                    cruzamentoAtual = proximaCasa.getMutexCruzamento();
-                    
                     //Define qual dos caminhos seguir dentro do cruzamento
                     Point2D posAt = proximaPosicao;
                     Casa casaAt = malha.getCasa(posAt);
@@ -91,7 +91,7 @@ public class Carro extends Thread {
                         List<List<TipoCasa>> movimentos = malha.getMovimentosPossiveisCruzamento().get(this.getDirecao());
                         int randomIndex = this.random.nextInt(movimentos.size());
                         movimentosAFazer = movimentos.get(randomIndex);
-                        
+
                         for (int i = 1; i < movimentosAFazer.size(); i++) {
                             TipoCasa dir = movimentosAFazer.get(i);
                             posAt = malha.getProximaPosicao(posAt, dir);
@@ -102,29 +102,35 @@ public class Carro extends Thread {
                         casaAt = malha.getCasa(posAt);
                     }
 
+                    //Dentro desse metodo ha um tryacquires
+                    proximaCasa.acquireCruzamento();
+                    cruzamentoAtual = proximaCasa.getMutexCruzamento();
+
                     //Faz Acquire na casa de saida
                     casaAtual = casaAt;
                     casaAtual.acquireCasa();
 
                     //Faz movimento ao longo do cruzamento
                     Point2D proximaPosicaoMovimento = null;
-                    
+
+                    boolean primeiraCasaCruzamento = true;
                     for(TipoCasa m : movimentosAFazer){
                         proximaPosicaoMovimento = malha.getProximaPosicao(this.getPosicao(), m);
                         Casa casaMover = malha.getCasa(proximaPosicaoMovimento);
 
                         //Entrou no cruzamento
                         ui.mover(proximaPosicaoMovimento, casaMover.getTipo());
-                        Thread.sleep(300);
+                        if (primeiraCasaCruzamento) {
+                            casaInicial.releaseCasa();
+                            primeiraCasaCruzamento = false;
+                        }
+                        Thread.sleep(velocidade);
                     }
-                    
 
                     proximaPosicao = malha.getProximaPosicao(this.getPosicao(), this.getDirecao());
                     proximaCasa = malha.getCasa(proximaPosicao);
-                    
-                    casaInicial.releaseCasa();
-                    casaAtual.releaseCasa();
-                    cruzamentoAtual.release();             
+
+                    cruzamentoAtual.release();
                 } else {
                     proximaCasa.acquireCasa();
                     casaAtual.releaseCasa();
@@ -136,11 +142,9 @@ public class Carro extends Thread {
                         proximaCasa = malha.getCasa(proximaPosicao);
                     } else {
                         proximaCasa.releaseCasa();
-
                         return;
                     }
-                    
-                    sleep(100);
+                    sleep(velocidade);
                 }
             }
         } catch (Exception e) {
@@ -156,7 +160,7 @@ public class Carro extends Thread {
 
             return true;
         }
-        
+
         return false;
     }
 

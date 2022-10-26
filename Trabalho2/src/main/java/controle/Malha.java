@@ -125,10 +125,10 @@ public class Malha {
 
     private HashMap<TipoCasa, List<List<TipoCasa>>> criaMovimentosPossiveisCruzamento(){
         HashMap<TipoCasa, List<List<TipoCasa>>> listaMovimentos = new HashMap<TipoCasa, List<List<TipoCasa>>>();
-        
+
         //Vindo da direita para esquerda
         List<List<TipoCasa>> movimentosLeft = new ArrayList<>();
-        
+
         List<TipoCasa> movimentosLeft1 = new ArrayList<>();
         movimentosLeft1.add(TipoCasa.TIPO_LEFT);
         movimentosLeft1.add(TipoCasa.TIPO_LEFT);
@@ -151,7 +151,7 @@ public class Malha {
 
         //Vindo da esquerda para direita
         List<List<TipoCasa>> movimentosRight = new ArrayList<>();
-        
+
         List<TipoCasa> movimentosRight1 = new ArrayList<>();
         movimentosRight1.add(TipoCasa.TIPO_RIGHT);
         movimentosRight1.add(TipoCasa.TIPO_RIGHT);
@@ -161,7 +161,7 @@ public class Malha {
         List<TipoCasa> movimentosRight2 = new ArrayList<>();
         movimentosRight2.add(TipoCasa.TIPO_RIGHT);
         movimentosRight2.add(TipoCasa.TIPO_DOWN);
-        movimentosRight.add(movimentosLeft2);
+        movimentosRight.add(movimentosRight2);
 
         List<TipoCasa> movimentosRight3 = new ArrayList<>();
         movimentosRight3.add(TipoCasa.TIPO_RIGHT);
@@ -174,7 +174,7 @@ public class Malha {
 
         //Vindo de baixo para cima
         List<List<TipoCasa>> movimentosUp = new ArrayList<>();
-        
+
         List<TipoCasa> movimentosUp1 = new ArrayList<>();
         movimentosUp1.add(TipoCasa.TIPO_UP);
         movimentosUp1.add(TipoCasa.TIPO_UP);
@@ -194,20 +194,20 @@ public class Malha {
         movimentosUp.add(movimentosUp3);
 
         listaMovimentos.put(TipoCasa.TIPO_UP, movimentosUp);
-        
+
         //Vindo de cima para baixo
         List<List<TipoCasa>> movimentosDown = new ArrayList<>();
-        
+
         List<TipoCasa> movimentosDown1 = new ArrayList<>();
         movimentosDown1.add(TipoCasa.TIPO_DOWN);
         movimentosDown1.add(TipoCasa.TIPO_DOWN);
         movimentosDown1.add(TipoCasa.TIPO_DOWN);
-        // movimentosDown.add(movimentosDown1);
+        movimentosDown.add(movimentosDown1);
 
         List<TipoCasa> movimentosDown2 = new ArrayList<>();
         movimentosDown2.add(TipoCasa.TIPO_DOWN);
         movimentosDown2.add(TipoCasa.TIPO_LEFT);
-        // movimentosDown.add(movimentosDown2);
+        movimentosDown.add(movimentosDown2);
 
         List<TipoCasa> movimentosDown3 = new ArrayList<>();
         movimentosDown3.add(TipoCasa.TIPO_DOWN);

@@ -30,7 +30,7 @@ public class ControladorMalha {
 
         //Spawna carros em uma das entradas aleatoriamente
         for (int i = 0; i < 20; i ++) {
-            spawnarCarro(random.nextInt(malha.getPosEntradas().size()));
+            spawnarCarro();
 
             // spawnarCarro(0);
         }
@@ -38,7 +38,6 @@ public class ControladorMalha {
         for (Point2D p : this.malha.getPosSaidas()) {
             System.out.println(p);
         }
-
     }
 
     // Abre a tela
@@ -53,7 +52,7 @@ public class ControladorMalha {
 
     // Le o arquivo
     public void lerArquivo() throws IOException {
-        new LeitorArquivo("recursos/malha-exemplo-3.txt");
+        new LeitorArquivo("recursos/malha-exemplo-1.txt");
 
         this.telaMalha = new TelaMalha(this.malha.getWidth(), this.malha.getHeight());
         geraMalha(this.malha.getMalha());
@@ -79,9 +78,9 @@ public class ControladorMalha {
     }
 
     // Insere um carro em uma das entradas
-    public void spawnarCarro(int posSpawn) {
+    public void spawnarCarro() {
         // Recupera uma posicao aleatoria dentre as entradas
-        // int posSpawn = new Random().nextInt(this.malha.getPosEntradas().size());
+        int posSpawn = random.nextInt(malha.getPosEntradas().size());
 
         Point2D posAleatoria = this.malha.getPosEntradas().get(posSpawn);
 
