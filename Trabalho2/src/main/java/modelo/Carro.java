@@ -72,7 +72,7 @@ public class Carro extends Thread {
             if (semaforo) {
                 // Semaforo faz acquire
                 casaAtual.acquireCasa();
-                if(firstCasa){
+                if (firstCasa) {
                     firstCasa = false;
                     malha.addCarroAtivo(this.ui);
                 }
@@ -86,25 +86,26 @@ public class Carro extends Thread {
                     ocupou = malha.ocupaCasa(casaAtualLista, ui);
                 }
             }
-            
+
             sleep(velocidade);
 
             while (true) {
-                //Se estiver em frente de um cruzamento
+                // Se estiver em frente de um cruzamento
                 if (malha.getCruzamento().contains(proximaCasa)) {
-                    //Casa antes de entrar no cruzamento;
+                    // Casa antes de entrar no cruzamento;
                     Casa casaInicial = casaAtual;
 
-                    //Define qual dos caminhos seguir dentro do cruzamento
+                    // Define qual dos caminhos seguir dentro do cruzamento
                     Point2D posAt = proximaPosicao;
                     Casa casaAt = malha.getCasa(posAt);
                     List<TipoCasa> movimentosAFazer = new ArrayList<>();
 
-                    while(malha.getCruzamento().contains(casaAt) || casaAt.getTipo().name().contains("EMPTY")){
+                    while (malha.getCruzamento().contains(casaAt) || casaAt.getTipo().name().contains("EMPTY")) {
                         posAt = proximaPosicao;
                         casaAt = malha.getCasa(posAt);
 
-                        List<List<TipoCasa>> movimentos = malha.getMovimentosPossiveisCruzamento().get(this.getDirecao());
+                        List<List<TipoCasa>> movimentos = malha.getMovimentosPossiveisCruzamento()
+                                .get(this.getDirecao());
                         int randomIndex = this.random.nextInt(movimentos.size());
                         movimentosAFazer = movimentos.get(randomIndex);
 
@@ -121,11 +122,11 @@ public class Carro extends Thread {
                     List<Point2D> casasCruzamento = new ArrayList<>();
 
                     if (semaforo) {
-                        //Dentro desse metodo ha um tryacquires
+                        // Dentro desse metodo ha um tryacquires
                         proximaCasa.acquireCruzamento();
                         cruzamentoAtual = proximaCasa.getMutexCruzamento();
 
-                        //Faz Acquire na casa de saida
+                        // Faz Acquire na casa de saida
                         casaAtual = casaAt;
                         casaAtual.acquireCasa();
                     } else {
@@ -144,7 +145,7 @@ public class Carro extends Thread {
                         }
                     }
 
-                    //Faz movimento ao longo do cruzamento
+                    // Faz movimento ao longo do cruzamento
                     Point2D proximaPosicaoMovimento = null;
 
                     boolean primeiraCasaCruzamento = true;
@@ -152,10 +153,10 @@ public class Carro extends Thread {
                         proximaPosicaoMovimento = malha.getProximaPosicao(this.getPosicao(), m);
                         Casa casaMover = malha.getCasa(proximaPosicaoMovimento);
 
-                        //Entrou no cruzamento
+                        // Entrou no cruzamento
                         ui.mover(proximaPosicaoMovimento, casaMover.getTipo());
 
-                        //Quando entrar no cruzamento libera a casa que tava
+                        // Quando entrar no cruzamento libera a casa que tava
                         if (primeiraCasaCruzamento) {
                             if (semaforo) {
                                 casaInicial.releaseCasa();
@@ -164,7 +165,7 @@ public class Carro extends Thread {
                                 casaLiberar.add(casaMover.getUi().getPosicao());
                                 malha.liberaCasa(casaLiberar);
                             }
-                            
+
                             primeiraCasaCruzamento = false;
                         }
                         Thread.sleep(velocidade);
@@ -187,14 +188,15 @@ public class Carro extends Thread {
                         proximaCasaPoint.add(proximaPosicao);
 
                         boolean ocupou = malha.ocupaCasa(proximaCasaPoint, ui);
-                        while(!ocupou) {
+                        while (!ocupou) {
                             sleep(velocidade);
                             malha.ocupaCasa(proximaCasaPoint, ui);
                         }
                     }
-
-                    if (!verificaFim(this, proximaPosicao)) {
-                        ui.mover(proximaPosicao, this.getDirecao());
+                    
+                    ui.mover(proximaPosicao, this.getDirecao());
+                    sleep(velocidade);
+                    if (!verificaFim(proximaPosicao)) {
                         casaAtual = proximaCasa;
                         proximaPosicao = malha.getProximaPosicao(proximaPosicao, this.getDirecao());
                         proximaCasa = malha.getCasa(proximaPosicao);
@@ -206,28 +208,29 @@ public class Carro extends Thread {
                             proximaCasaPoint.add(proximaPosicao);
                             malha.liberaCasa(proximaCasaPoint);
                         }
-                        
+
                         return;
                     }
                     sleep(velocidade);
                 }
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    private boolean verificaFim(Carro carro, Point2D posicao) throws InterruptedException {
-        if (this.malha.getPosSaidas().contains(posicao)) {
-            destruirCarro();
-
-            return true;
+    private boolean verificaFim(Point2D posicao) throws InterruptedException {
+        for(Point2D p : this.malha.getPosSaidas()){
+            if(p.getX() == posicao.getX() && p.getY() == posicao.getY()){
+                destruirCarro();
+                return true;
+            }
         }
 
         return false;
     }
 
-    public void destruirCarro(){
+    public void destruirCarro() {
         Carro carro = this;
         this.ui.finalizarCarro();
         this.malha.removeCarro(this.ui);

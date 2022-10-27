@@ -129,12 +129,10 @@ public class TelaSimulador extends VBox{
             public void handle(MouseEvent event) {
                 malha.setDestroy(true);
                 for(UiCarro c : malha.getCarros()){
-                    c.getCarro().interrupt();
                     c.getCarro().destruirCarro();
                 }
 
                 for(UiCarro c : malha.getCarrosAtivos()){
-                    c.getCarro().interrupt();
                     c.getCarro().destruirCarro();
                 }
 
