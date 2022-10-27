@@ -2,7 +2,6 @@ package modelo;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.Semaphore;
@@ -20,7 +19,6 @@ public class Carro extends Thread {
     private Malha malha;
     private Random random = new Random();
     private int velocidade;
-    private boolean semaforo = true;
     private boolean firstCasa = true;
     private boolean destroy = false;
 
@@ -74,33 +72,38 @@ public class Carro extends Thread {
         try {
             Malha malha = Malha.getInstance();
             Casa casaAtual = malha.getCasa(this.getPosicao());
+            Point2D posicaoAtual = this.getPosicao();
             Point2D proximaPosicao = malha.getProximaPosicao(this.getPosicao(), this.getDirecao());
             Casa proximaCasa = malha.getCasa(proximaPosicao);
-            Semaphore cruzamentoAtual = null;
+            Semaphore cruzamentoAtual = null;         
 
-            if (semaforo) {
+            if (firstCasa) {
+                firstCasa = false;
+                malha.addCarroAtivo(this.ui);
+            }
+
+            if (malha.usaSemaforo()) {
                 // Semaforo faz acquire
                 casaAtual.acquireCasa();
-                if (firstCasa) {
-                    firstCasa = false;
-                    malha.addCarroAtivo(this.ui);
-                }
             } else {
                 // Senao tenta ocupar a casa
                 List<Point2D> casaAtualLista = new ArrayList<>();
-                casaAtualLista.add(casaAtual.getUi().getPosicao());
-                boolean ocupou = malha.ocupaCasa(casaAtualLista, ui);
+                casaAtualLista.add(this.getPosicao());
+                boolean ocupou = Malha.getInstance().trataCasa(casaAtualLista, ui, true);
                 while (!ocupou) {
                     sleep(velocidade);
-                    ocupou = malha.ocupaCasa(casaAtualLista, ui);
+                    ocupou = Malha.getInstance().trataCasa(casaAtualLista, ui, true);
                 }
             }
 
             sleep(velocidade);
 
             while (!destroy) {
+                posicaoAtual = getPosicao();
+
                 // Validacao de vida da Thread
                 System.out.println(new Date().getTime());
+
                 // Se estiver em frente de um cruzamento
                 if (malha.getCruzamento().contains(proximaCasa)) {
                     // Casa antes de entrar no cruzamento;
@@ -132,7 +135,7 @@ public class Carro extends Thread {
 
                     List<Point2D> casasCruzamento = new ArrayList<>();
 
-                    if (semaforo) {
+                    if (malha.usaSemaforo()) {
                         // Dentro desse metodo ha um tryacquires
                         proximaCasa.acquireCruzamento();
                         cruzamentoAtual = proximaCasa.getMutexCruzamento();
@@ -142,17 +145,26 @@ public class Carro extends Thread {
                         casaAtual.acquireCasa();
                     } else {
                         // Cria uma lista com as posicoes ate sair do cruzamento
-                        casasCruzamento.add(proximaPosicao);
-                        for (int i = 1; i <= movimentosAFazer.size(); i++) {
-                            TipoCasa direcao = movimentosAFazer.get(i);
-                            casasCruzamento.add(malha.getProximaPosicao(posAt, direcao));
+                        Point2D proximaPosicaoMovimento = null;
+                        for (TipoCasa m : movimentosAFazer) {
+                            if (proximaPosicaoMovimento == null) {
+                                proximaPosicaoMovimento = malha.getProximaPosicao(this.getPosicao(), m);
+                            } else {
+                                proximaPosicaoMovimento = malha.getProximaPosicao(proximaPosicaoMovimento, m);
+                            }
                         }
 
+                        // Casas do cruzamento
+                        casasCruzamento = malha.getCasaCruzamento(getPosicao(), getDirecao());
+
+                        // Casa depois do cruzamento
+                        casasCruzamento.add(proximaPosicaoMovimento);
+
                         // Tenta ocupar todas as casas necessarias
-                        boolean ocupou = malha.ocupaCasa(casasCruzamento, ui);
-                        if (!ocupou) {
+                        boolean ocupou = Malha.getInstance().trataCasa(casasCruzamento, ui, true);
+                        while (!ocupou) {
                             sleep(velocidade);
-                            ocupou = malha.ocupaCasa(casasCruzamento, ui);
+                            ocupou = Malha.getInstance().trataCasa(casasCruzamento, ui, true);
                         }
                     }
 
@@ -169,12 +181,12 @@ public class Carro extends Thread {
 
                         // Quando entrar no cruzamento libera a casa que tava
                         if (primeiraCasaCruzamento) {
-                            if (semaforo) {
+                            if (malha.usaSemaforo()) {
                                 casaInicial.releaseCasa();
                             } else {
                                 List<Point2D> casaLiberar = new ArrayList<>();
-                                casaLiberar.add(casaMover.getUi().getPosicao());
-                                malha.liberaCasa(casaLiberar);
+                                casaLiberar.add(posicaoAtual);
+                                Malha.getInstance().trataCasa(casaLiberar, ui, false);
                             }
 
                             primeiraCasaCruzamento = false;
@@ -185,24 +197,29 @@ public class Carro extends Thread {
                     proximaPosicao = malha.getProximaPosicao(this.getPosicao(), this.getDirecao());
                     proximaCasa = malha.getCasa(proximaPosicao);
 
-                    if (semaforo) {
+                    if (malha.usaSemaforo()) {
                         cruzamentoAtual.release();
                     } else {
-                        malha.liberaCasa(casasCruzamento);
+                        Malha.getInstance().trataCasa(casasCruzamento, ui, false);
                     }
                 } else {
-                    if (semaforo) {
+                    if (malha.usaSemaforo()) {
                         proximaCasa.acquireCasa();
                         casaAtual.releaseCasa();
                     } else {
+                        // Ocupa proxima casa
                         List<Point2D> proximaCasaPoint = new ArrayList<>();
                         proximaCasaPoint.add(proximaPosicao);
-
-                        boolean ocupou = malha.ocupaCasa(proximaCasaPoint, ui);
-                        while (!ocupou) {
+                        boolean ocupou = Malha.getInstance().trataCasa(proximaCasaPoint, ui, true);
+                        while(!ocupou) {
                             sleep(velocidade);
-                            malha.ocupaCasa(proximaCasaPoint, ui);
+                            ocupou = Malha.getInstance().trataCasa(proximaCasaPoint, ui, true);
                         }
+
+                        // Libera a casa atual
+                        List<Point2D> casaAtualPoint = new ArrayList<>();
+                        casaAtualPoint.add(posicaoAtual);
+                        Malha.getInstance().trataCasa(casaAtualPoint, ui, false);
                     }
                     
                     ui.mover(proximaPosicao, this.getDirecao());
@@ -212,12 +229,13 @@ public class Carro extends Thread {
                         proximaPosicao = malha.getProximaPosicao(proximaPosicao, this.getDirecao());
                         proximaCasa = malha.getCasa(proximaPosicao);
                     } else {
-                        if (semaforo) {
+                        if (malha.usaSemaforo()) {
                             proximaCasa.releaseCasa();
                         } else {
+                            // Libera a casa atual
                             List<Point2D> proximaCasaPoint = new ArrayList<>();
                             proximaCasaPoint.add(proximaPosicao);
-                            malha.liberaCasa(proximaCasaPoint);
+                            Malha.getInstance().trataCasa(proximaCasaPoint, ui, false);
                         }
 
                         return;

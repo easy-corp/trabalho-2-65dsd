@@ -6,6 +6,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
+import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
 import modelo.Casa;
 import modelo.ui.UiCarro;
@@ -81,6 +82,9 @@ public class ControladorMalha {
 
             @Override
             public void handle(Event event) {
+                RadioButton rb = (RadioButton) telaSimulador.getRbTipo();
+                malha.setTipoThread(rb.getText());
+
                 int qtdCarros = Integer.parseInt(telaSimulador.getTextInpQtdCarros());
                 malha.setQtdCarros(qtdCarros);
 
@@ -97,6 +101,8 @@ public class ControladorMalha {
                 malha.setDestroy(false);
                 telaSimulador.setDisableBtnEncerrar(false);
                 telaSimulador.setDisableBtnDebug(false);
+                telaSimulador.setDisableRbSemaforo(true);
+                telaSimulador.setDisableRbSemaforo(true);
             }
             
         });
@@ -129,6 +135,8 @@ public class ControladorMalha {
                 telaSimulador.setDisableBtnPlay(false);
                 telaSimulador.setDisableBtnEncerrar(true);
                 telaSimulador.setDisableBtnDebug(true);
+                telaSimulador.setDisableRbSemaforo(false);
+                telaSimulador.setDisableRbSemaforo(false);
             }
             
         });
@@ -138,6 +146,8 @@ public class ControladorMalha {
 
             @Override
             public void handle(Event event) {
+                System.out.println(malha.getDebug());
+
                 if (malha.getDebug()) {
                     malha.setDebug(false);
                 } else {

@@ -10,7 +10,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Toggle;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -26,6 +29,11 @@ public class TelaSimulador extends VBox{
     private Button buttonPlay;
     private Button buttonEncerrar;
     private Button buttonDebugMode;
+    private Label lblRadio;
+    private ToggleGroup tgGroup;
+    private RadioButton RbSemaforo;
+    private RadioButton RbMonitor;
+    
 
     public TelaSimulador(TelaMalhaPrincipal telaMalha){
         this.telaMalha = telaMalha;
@@ -70,6 +78,14 @@ public class TelaSimulador extends VBox{
         HBox botoes = new HBox();
         botoes.setAlignment(Pos.CENTER);
         botoes.setSpacing(10);
+
+        this.lblRadio = new Label("Selecione o tipo: ");
+        this.tgGroup = new ToggleGroup();
+        
+        this.RbSemaforo = new RadioButton("Semáforo");
+        this.RbSemaforo.setToggleGroup(tgGroup);
+        this.RbMonitor = new RadioButton("Monitor");
+        this.RbMonitor.setToggleGroup(tgGroup);
         
         this.buttonPlay = new Button("Iniciar");
 
@@ -83,6 +99,9 @@ public class TelaSimulador extends VBox{
         this.buttonDebugMode = new Button("Debugar");
         buttonDebugMode.setDisable(true);
 
+        botoes.getChildren().add(lblRadio);
+        botoes.getChildren().add(RbSemaforo);
+        botoes.getChildren().add(RbMonitor);
         botoes.getChildren().add(buttonPlay);
         botoes.getChildren().add(buttonEncerrar);
         botoes.getChildren().add(buttonDebugMode);
@@ -137,6 +156,18 @@ public class TelaSimulador extends VBox{
 
     public void setDisableInpQtdCarros(boolean opt) {
         this.intputQtdCarros.setDisable(opt);
+    }
+
+    public Toggle getRbTipo() {
+        return this.tgGroup.getSelectedToggle();
+    }
+
+    public void setDisableRbSemaforo(boolean opt) {
+        this.RbSemaforo.setDisable(opt);
+    }
+
+    public void setDisableRbMonitor(boolean opt) {
+        this.RbMonitor.setDisable(opt);
     }
 
     public void removeChildren(int i) {

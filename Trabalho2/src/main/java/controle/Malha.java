@@ -34,6 +34,7 @@ public class Malha {
     private IntegerProperty contadorCarros = new SimpleIntegerProperty();
     private int qtdCarros = 0;
     private TelaMalhaPrincipal telaMalha;
+    private String tipoThread = "Semáforo";
     private boolean destroy = false;
     private boolean debugMode = false;    
 
@@ -155,6 +156,22 @@ public class Malha {
 
     public void setDestroy(boolean destroy) {
         this.destroy = destroy;
+    }
+
+    public String getTipoThread() {
+        return this.tipoThread;
+    }
+
+    public void setTipoThread(String text) {
+        this.tipoThread = text;
+    }
+
+    public boolean usaSemaforo() {
+        if (getTipoThread().contentEquals("Semáforo")) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public List<UiCarro> getCarros() {
@@ -316,29 +333,7 @@ public class Malha {
 
     public HashMap<TipoCasa, List<List<TipoCasa>>> getMovimentosPossiveisCruzamento() {
         return this.movimentosPossiveisCruzamento;
-    }
-
-    public synchronized boolean ocupaCasa(List<Point2D> destino, UiCarro ui) {
-        // Verifica se todas as posicoes de destino estao livres
-        for (Point2D d : destino) {
-            if (casaOcupada.containsKey(d)) {
-                return false;
-            }
-        }
-
-        // Ocupa todas as posicoes
-        for (Point2D d : destino) {
-            casaOcupada.put(d, ui);
-        }
-
-        return true;
-    }
-
-    public synchronized void liberaCasa(List<Point2D> origem) {
-        for (Point2D o : origem) {
-            casaOcupada.remove(o);
-        }
-    }
+    }   
 
     public Carro spawnarCarro() {
         Random random = new Random();
@@ -363,6 +358,78 @@ public class Malha {
         return carro;
         // inicia a thread do carro
         // carro.start();
+    }
+
+    public synchronized boolean trataCasa(List<Point2D> pontos, UiCarro ui, boolean ocupa) {
+        if (ocupa) {
+            // Verifica se todas as posicoes de destino estao livres
+            for (Point2D d : pontos) {
+                if (casaOcupada.containsKey(d)) {
+                    return false;
+                }
+            }
+
+            // Ocupa todas as posicoes
+            for (Point2D d : pontos) {
+                casaOcupada.put(d, ui);
+            }
+
+            return true;
+        }
+
+        for (Point2D o : pontos) {
+            casaOcupada.remove(o);
+        }
+
+        return true;
+    }
+
+    public List<Point2D> getCasaCruzamento(Point2D posicaoAtual, TipoCasa direcao) {
+        List<Point2D> pos = new ArrayList<>();
+        switch (direcao) {
+            case TIPO_DOWN:
+                Point2D baixo = getProximaPosicao(posicaoAtual, TipoCasa.TIPO_DOWN);
+                Point2D baixoBaixo = getProximaPosicao(baixo, TipoCasa.TIPO_DOWN);
+                Point2D baixoDir = getProximaPosicao(baixo, TipoCasa.TIPO_RIGHT);
+                Point2D baixoBaixoDir = getProximaPosicao(baixoBaixo, TipoCasa.TIPO_RIGHT);
+                pos.add(baixo);
+                pos.add(baixoBaixo);
+                pos.add(baixoDir);
+                pos.add(baixoBaixoDir);
+                break;
+            case TIPO_UP:
+                Point2D cima = getProximaPosicao(posicaoAtual, TipoCasa.TIPO_UP);
+                Point2D cimaCima = getProximaPosicao(cima, TipoCasa.TIPO_UP);
+                Point2D cimaEsq = getProximaPosicao(cima, TipoCasa.TIPO_LEFT);
+                Point2D cimaCimaEsq = getProximaPosicao(cimaCima, TipoCasa.TIPO_LEFT);
+                pos.add(cima);
+                pos.add(cimaCima);
+                pos.add(cimaEsq);
+                pos.add(cimaCimaEsq);
+                break;
+            case TIPO_LEFT:
+                Point2D esq = getProximaPosicao(posicaoAtual, TipoCasa.TIPO_LEFT);
+                Point2D esqEsq = getProximaPosicao(esq, TipoCasa.TIPO_LEFT);
+                Point2D esqBaixo = getProximaPosicao(esq, TipoCasa.TIPO_DOWN);
+                Point2D esqEsqBaixo = getProximaPosicao(esqEsq, TipoCasa.TIPO_DOWN);
+                pos.add(esq);
+                pos.add(esqEsq);
+                pos.add(esqBaixo);
+                pos.add(esqEsqBaixo);
+                break;
+            case TIPO_RIGHT:
+                Point2D dir = getProximaPosicao(posicaoAtual, TipoCasa.TIPO_RIGHT);
+                Point2D dirDir = getProximaPosicao(dir, TipoCasa.TIPO_RIGHT);
+                Point2D dirCima = getProximaPosicao(dir, TipoCasa.TIPO_UP);
+                Point2D dirDirCima = getProximaPosicao(dirDir, TipoCasa.TIPO_UP);
+                pos.add(dir);
+                pos.add(dirDir);
+                pos.add(dirCima);
+                pos.add(dirDirCima);
+                break;
+        }
+
+        return pos;
     }
 
 }
