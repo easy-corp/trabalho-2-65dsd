@@ -79,4 +79,14 @@ public class UiCarro extends ImageView {
 
     }
 
+    public Carro getCarro() {
+        return carro;
+    }
+
+    public void setCarro(Carro carro) {
+        this.carro = carro;
+    }
+
+    
+
 }

@@ -2,20 +2,19 @@ package visao;
 
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
-public class TelaMalha {
+public class TelaMalhaPrincipal {
 
-    private final int size = 25;
+    public static final int size = 25;
 	private final int width;
 	private final int heigth;
     private HBox malha;
     private Group grupoMalha;
     private Group grupoCarros; 
 
-    public TelaMalha(int width, int height) {
+    public TelaMalhaPrincipal(int width, int height) {
         this.width = width;
         this.heigth = height;
 

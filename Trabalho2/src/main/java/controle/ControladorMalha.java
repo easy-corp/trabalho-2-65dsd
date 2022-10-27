@@ -1,6 +1,7 @@
 package controle;
 
 import java.io.IOException;
+import java.lang.ModuleLayer.Controller;
 import java.util.Random;
 
 import javafx.geometry.Point2D;
@@ -12,12 +13,12 @@ import modelo.Casa.TipoCasa;
 import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;
 import modelo.ui.UiSimbolo;
-import visao.TelaMalha;
+import visao.TelaMalhaPrincipal;
 import visao.TelaSimulador;
 
 public class ControladorMalha {
 
-    private TelaMalha telaMalha;
+    private TelaMalhaPrincipal telaMalha;
     private Malha malha;
     private Stage stage;
     private Random random = new Random();
@@ -29,12 +30,6 @@ public class ControladorMalha {
         lerArquivo();
         iniciarTela();
 
-        //Spawna carros em uma das entradas aleatoriamente
-        for (int i = 0; i < 20; i ++) {
-            spawnarCarro();
-
-            // spawnarCarro(0);
-        }
 
         for (Point2D p : this.malha.getPosSaidas()) {
             System.out.println(p);
@@ -53,9 +48,10 @@ public class ControladorMalha {
 
     // Le o arquivo
     public void lerArquivo() throws IOException {
-        new LeitorArquivo("recursos/malha-exemplo-1.txt");
+        new LeitorArquivo("recursos/malha-exemplo-3.txt");
 
-        this.telaMalha = new TelaMalha(this.malha.getWidth(), this.malha.getHeight());
+        this.telaMalha = new TelaMalhaPrincipal(this.malha.getWidth(), this.malha.getHeight());
+        this.malha.setTelaMalha(telaMalha);
         geraMalha(this.malha.getMalha());
     }
 
@@ -79,27 +75,6 @@ public class ControladorMalha {
     }
 
     // Insere um carro em uma das entradas
-    public void spawnarCarro() {
-        // Recupera uma posicao aleatoria dentre as entradas
-        int posSpawn = random.nextInt(malha.getPosEntradas().size());
 
-        Point2D posAleatoria = this.malha.getPosEntradas().get(posSpawn);
-
-        // Recupera a posicao a qual o carro esta virado
-        TipoCasa direcao = this.malha.getCasa(posAleatoria).getTipo();
-
-        // Cria o carro
-        Carro carro = new Carro(posAleatoria, direcao);
-        UiCarro uiCarro = new UiCarro(carro, this.telaMalha.getSize());
-
-        // Adiciona o carro na tela
-        this.telaMalha.getGrupoCarros().getChildren().add(uiCarro);
-
-        // Adiciona o carro na lista para manipular
-        this.malha.addCarro(uiCarro);
-
-        // inicia a thread do carro
-        carro.start();
-    }
 
 }

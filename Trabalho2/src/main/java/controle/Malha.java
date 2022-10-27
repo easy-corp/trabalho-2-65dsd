@@ -3,14 +3,17 @@ package controle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point2D;
+import modelo.Carro;
 import modelo.Casa;
 import modelo.Casa.TipoCasa;
 import modelo.ui.UiCarro;
+import visao.TelaMalhaPrincipal;
 
 public class Malha {
 
@@ -23,11 +26,15 @@ public class Malha {
     private List<Point2D> posEntradas = new ArrayList<>(); // Lista das posições de entrada
     private List<Point2D> posSaidas = new ArrayList<>(); // Lista das posições de saida
     private List<UiCarro> carros = new ArrayList<>(); // Lista dos carros inseridos
+    private List<UiCarro> carrosAtivos = new ArrayList<>(); // Lista dos carros inseridos
     private List<Casa> cruzamentos = new ArrayList<>(); // Lista dos carros inseridos
     private HashMap<TipoCasa, List<List<TipoCasa>>> movimentosPossiveisCruzamento = this
             .criaMovimentosPossiveisCruzamento();
     private HashMap<Point2D, UiCarro> casaOcupada = new HashMap<>();
     private IntegerProperty contadorCarros = new SimpleIntegerProperty();
+    private int qtdCarros = 0;
+    private TelaMalhaPrincipal telaMalha;
+    private boolean destroy = false;
 
     private Malha() {
     }
@@ -86,27 +93,65 @@ public class Malha {
 
     public void addCarro(UiCarro carro) {
         this.carros.add(carro);
+    }
+
+    public List<UiCarro> getCarrosAtivos() {
+        return carrosAtivos;
+    }
+
+    public void setCarrosAtivos(List<UiCarro> carrosAtivos) {
+        this.carrosAtivos = carrosAtivos;
+    }
+
+    public int getQtdCarros() {
+        return qtdCarros;
+    }
+
+    public void setQtdCarros(int qtdCarros) {
+        this.qtdCarros = qtdCarros;
+    }
+
+    public void setTelaMalha(TelaMalhaPrincipal tela) {
+        this.telaMalha = tela;
+    }
+
+    public void addCarroAtivo(UiCarro carro) {
+        this.carrosAtivos.add(carro);
         Platform.runLater(new Runnable() {
 
             @Override
             public void run() {
-                contadorCarros.set(carros.size());
+                contadorCarros.set(carrosAtivos.size());
             }
 
         });
     }
 
     public void removeCarro(UiCarro carro) {
-        this.carros.remove(carro);
+
         Platform.runLater(new Runnable() {
 
             @Override
             public void run() {
-                contadorCarros.set(carros.size());
+
+                carros.remove(carro);
+                carrosAtivos.remove(carro);
+                contadorCarros.set(carrosAtivos.size());
+
+                Carro newCarro = spawnarCarro();
+                newCarro.start();
             }
 
         });
 
+    }
+
+    public boolean isDestroy() {
+        return destroy;
+    }
+
+    public void setDestroy(boolean destroy) {
+        this.destroy = destroy;
     }
 
     public List<UiCarro> getCarros() {
@@ -277,6 +322,31 @@ public class Malha {
         for (Point2D o : origem) {
             casaOcupada.remove(o);
         }
+    }
+
+    public Carro spawnarCarro() {
+        Random random = new Random();
+        // Recupera uma posicao aleatoria dentre as entradas
+        int posSpawn = random.nextInt(getPosEntradas().size());
+
+        Point2D posAleatoria = getPosEntradas().get(posSpawn);
+
+        // Recupera a posicao a qual o carro esta virado
+        modelo.Casa.TipoCasa direcao = getCasa(posAleatoria).getTipo();
+
+        // Cria o carro
+        Carro carro = new Carro(posAleatoria, direcao);
+        UiCarro uiCarro = new UiCarro(carro, TelaMalhaPrincipal.size);
+
+        // Adiciona o carro na tela
+        this.telaMalha.getGrupoCarros().getChildren().add(uiCarro);
+
+        // Adiciona o carro na lista para manipular
+        addCarro(uiCarro);
+
+        return carro;
+        // inicia a thread do carro
+        // carro.start();
     }
 
 }

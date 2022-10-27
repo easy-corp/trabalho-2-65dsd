@@ -8,7 +8,6 @@ import java.util.concurrent.Semaphore;
 
 import controle.Malha;
 import javafx.geometry.Point2D;
-import javafx.scene.paint.Color;
 import modelo.Casa.TipoCasa;
 import modelo.ui.UiCarro;
 
@@ -22,13 +21,12 @@ public class Carro extends Thread {
     private Random random = new Random();
     private int velocidade;
     private boolean semaforo = true;
+    private boolean firstCasa = true;
 
     public Carro(Point2D spawnPoint, TipoCasa direcao) {
         mover(spawnPoint, direcao);
 
-//        velocidade = random.nextInt(5, 10) * 100;
-        velocidade = 80;
-
+        velocidade = random.nextInt(10) * 100;
         this.malha = Malha.getInstance();
     }
 
@@ -74,10 +72,14 @@ public class Carro extends Thread {
             if (semaforo) {
                 // Semaforo faz acquire
                 casaAtual.acquireCasa();
+                if(firstCasa){
+                    firstCasa = false;
+                    malha.addCarroAtivo(this.ui);
+                }
             } else {
                 // Senao tenta ocupar a casa
                 List<Point2D> casaAtualLista = new ArrayList<>();
-                casaAtualLista.add(proximaPosicao);
+                casaAtualLista.add(casaAtual.getUi().getPosicao());
                 boolean ocupou = malha.ocupaCasa(casaAtualLista, ui);
                 while (!ocupou) {
                     sleep(velocidade);
@@ -217,14 +219,19 @@ public class Carro extends Thread {
 
     private boolean verificaFim(Carro carro, Point2D posicao) throws InterruptedException {
         if (this.malha.getPosSaidas().contains(posicao)) {
-            this.ui.finalizarCarro();
-            this.malha.removeCarro(this.ui);
-            carro = null;
+            destruirCarro();
 
             return true;
         }
 
         return false;
+    }
+
+    public void destruirCarro(){
+        Carro carro = this;
+        this.ui.finalizarCarro();
+        this.malha.removeCarro(this.ui);
+        carro = null;
     }
 
 }
