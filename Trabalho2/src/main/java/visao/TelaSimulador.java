@@ -7,16 +7,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import modelo.ui.UiCarro;
 
 public class TelaSimulador extends VBox{
 
@@ -74,98 +72,16 @@ public class TelaSimulador extends VBox{
         botoes.setSpacing(10);
         
         this.buttonPlay = new Button("Iniciar");
-        buttonPlay.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                int qtdCarros = Integer.parseInt(intputQtdCarros.getText());
-                malha.setQtdCarros(qtdCarros);
-
-                for(int i=0; i< qtdCarros; i++){
-                    malha.spawnarCarro();
-                }
-
-                for(UiCarro uic : malha.getCarros()){
-                    uic.getCarro().start();
-                }
-
-                buttonPlay.setDisable(true);
-                intputQtdCarros.setDisable(true);
-                malha.setDestroy(false);
-                buttonEncerrar.setDisable(false);
-                buttonDebugMode.setDisable(false);
-                
-            }
-            
-        });
 
         intputQtdCarros = new TextField();
         intputQtdCarros.setMaxWidth(60);
         intputQtdCarros.setText("10");
 
-        intputQtdCarros.setOnKeyTyped(new EventHandler<KeyEvent>() {
-
-            @Override
-            public void handle(KeyEvent event) {
-
-
-                boolean isNumeric = false;
-
-                try {
-                    Double.parseDouble(intputQtdCarros.getText().trim());
-                    isNumeric = true;
-                } catch (Exception e) {
-                    isNumeric = false;
-                }
-
-                buttonPlay.setDisable(!isNumeric);
-            }
-            
-        });
-
-
         this.buttonEncerrar = new Button("Encerrar");
         buttonEncerrar.setDisable(true);
-        buttonEncerrar.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                malha.setDestroy(true);
-
-                for(UiCarro c : malha.getCarros()){
-                    c.getCarro().setDestroy(true);
-                    c.getCarro().destruirCarro();
-                }
-                for(UiCarro c : malha.getCarrosAtivos()){
-                    c.getCarro().setDestroy(true);
-                    c.getCarro().destruirCarro();
-                }
-
-                malha.clearCarros();
-
-                intputQtdCarros.setDisable(false);
-                buttonPlay.setDisable(false);
-                buttonEncerrar.setDisable(true);
-                buttonDebugMode.setDisable(true);
-            }
-            
-        });
 
         this.buttonDebugMode = new Button("Debugar");
         buttonDebugMode.setDisable(true);
-        buttonDebugMode.setOnMouseClicked(new EventHandler<MouseEvent>() {
-
-            @Override
-            public void handle(MouseEvent event) {
-                if (malha.getDebug()) {
-                    malha.setDebug(false);
-                } else {
-                    malha.setDebug(true);
-                }
-                
-            }
-            
-        });
 
         botoes.getChildren().add(buttonPlay);
         botoes.getChildren().add(buttonEncerrar);
@@ -180,11 +96,55 @@ public class TelaSimulador extends VBox{
         telaControles.getChildren().add(intputQtdCarros);
         telaControles.getChildren().add(botoes);
 
-
         return telaControles;
     }
 
+    public void setAcaoBtnPlay(EventHandler acao) {
+        this.buttonPlay.setOnMouseClicked(acao);
+    }
 
+    public void setAcaoBtnEncerrar(EventHandler acao) {
+        this.buttonEncerrar.setOnMouseClicked(acao);
+    }
 
+    public void setAcaoBtnDebug(EventHandler acao) {
+        this.buttonDebugMode.setOnMouseClicked(acao);
+    }
+
+    public void setAcaoInpQtdCarros(EventHandler acao) {
+        this.intputQtdCarros.setOnKeyTyped(acao);
+    }
+
+    public void setTextInpQtdCarros(String num) {
+        this.intputQtdCarros.setText(num);
+    }
+
+    public String getTextInpQtdCarros() {
+        return this.intputQtdCarros.getText();
+    }
+
+    public void setDisableBtnPlay(boolean opt) {
+        this.buttonPlay.setDisable(opt);
+    }
+
+    public void setDisableBtnEncerrar(boolean opt) {
+        this.buttonEncerrar.setDisable(opt);
+    }
+
+    public void setDisableBtnDebug(boolean opt) {
+        this.buttonDebugMode.setDisable(opt);
+    }
+
+    public void setDisableInpQtdCarros(boolean opt) {
+        this.intputQtdCarros.setDisable(opt);
+    }
+
+    public void removeChildren(int i) {
+        this.getChildren().remove(i);
+    }
+
+    public void addChildren(Node no) {
+        this.getChildren().add(no);
+    }
     
 }

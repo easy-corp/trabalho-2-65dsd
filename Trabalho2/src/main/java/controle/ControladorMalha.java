@@ -1,10 +1,14 @@
 package controle;
 
 import java.io.IOException;
+
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import modelo.Casa;
+import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;
 import modelo.ui.UiSimbolo;
 import visao.TelaMalhaPrincipal;
@@ -13,24 +17,27 @@ import visao.TelaSimulador;
 public class ControladorMalha {
 
     private TelaMalhaPrincipal telaMalha;
+    private TelaSimulador telaSimulador;
     private Malha malha;
     private Stage stage;
+
     public ControladorMalha(Stage stage) throws IOException {
         this.malha = Malha.getInstance();
         this.stage = stage;
 
         lerArquivo();
+        
+        this.telaSimulador = new TelaSimulador(this.telaMalha);
+
         iniciarTela();
 
-
-        for (Point2D p : this.malha.getPosSaidas()) {
-            System.out.println(p);
-        }
+        setAcaoBtn();
+        
     }
 
     // Abre a tela
-    public void iniciarTela() {
-        Scene cena = new Scene(new TelaSimulador(this.telaMalha));
+    private void iniciarTela() {
+        Scene cena = new Scene(this.telaSimulador);
 
         stage.setTitle("Malha de trânsito");
         stage.setScene(cena);
@@ -39,7 +46,7 @@ public class ControladorMalha {
     }
 
     // Le o arquivo
-    public void lerArquivo() throws IOException {
+    private void lerArquivo() throws IOException {
         new LeitorArquivo("recursos/malha-exemplo-3.txt");
 
         this.telaMalha = new TelaMalhaPrincipal(this.malha.getWidth(), this.malha.getHeight());
@@ -48,7 +55,7 @@ public class ControladorMalha {
     }
 
     // Gera a malha na tela
-    public void geraMalha(Casa[][] malha) {
+    private void geraMalha(Casa[][] malha) {
         // Percorre linhas
         for (int x = 0; x < this.malha.getHeight(); x++) {
             // Percorre colunas
@@ -66,7 +73,97 @@ public class ControladorMalha {
         }
     }
 
-    // Insere um carro em uma das entradas
+    // Define acao dos botoes
+    public void setAcaoBtn() {
 
+        // Acao botao PLAY
+        this.telaSimulador.setAcaoBtnPlay(new EventHandler<Event>() {
 
+            @Override
+            public void handle(Event event) {
+                int qtdCarros = Integer.parseInt(telaSimulador.getTextInpQtdCarros());
+                malha.setQtdCarros(qtdCarros);
+
+                for(int i=0; i< qtdCarros; i++){
+                    malha.spawnarCarro();
+                }
+
+                for(UiCarro uic : malha.getCarros()){
+                    uic.getCarro().start();
+                }
+
+                telaSimulador.setDisableBtnPlay(true);
+                telaSimulador.setDisableInpQtdCarros(true);
+                malha.setDestroy(false);
+                telaSimulador.setDisableBtnEncerrar(false);
+                telaSimulador.setDisableBtnDebug(false);
+            }
+            
+        });
+
+        // Acao botao ENCERRAR
+        this.telaSimulador.setAcaoBtnEncerrar(new EventHandler<Event>() {
+
+            @Override
+            public void handle(Event event) {
+                malha.setDestroy(true);
+
+                for(UiCarro c : malha.getCarros()){
+                    c.getCarro().setDestroy(true);
+                    c.getCarro().destruirCarro();
+                }
+                for(UiCarro c : malha.getCarrosAtivos()){
+                    c.getCarro().setDestroy(true);
+                    c.getCarro().destruirCarro();
+                }
+
+                malha.clearCarros();
+
+                telaSimulador.removeChildren(1);
+                TelaMalhaPrincipal novaTelaMalha = new TelaMalhaPrincipal(malha.getWidth(), malha.getHeight());
+                malha.setTelaMalha(novaTelaMalha);
+                geraMalha(malha.getMalha());
+                telaSimulador.addChildren(novaTelaMalha.createContent());
+
+                telaSimulador.setDisableInpQtdCarros(false);
+                telaSimulador.setDisableBtnPlay(false);
+                telaSimulador.setDisableBtnEncerrar(true);
+                telaSimulador.setDisableBtnDebug(true);
+            }
+            
+        });
+
+        // Acao botao DEBUG
+        this.telaSimulador.setAcaoBtnDebug(new EventHandler<Event>() {
+
+            @Override
+            public void handle(Event event) {
+                if (malha.getDebug()) {
+                    malha.setDebug(false);
+                } else {
+                    malha.setDebug(true);
+                }
+            }
+            
+        });
+
+        // Acao botao INPUT QTD CARROS
+        this.telaSimulador.setAcaoInpQtdCarros(new EventHandler<Event>() {
+
+            @Override
+            public void handle(Event event) {
+                boolean isNumeric = false;
+
+                try {
+                    Double.parseDouble(telaSimulador.getTextInpQtdCarros().trim());
+                    isNumeric = true;
+                } catch (Exception e) {
+                    isNumeric = false;
+                }
+
+                telaSimulador.setDisableBtnPlay(!isNumeric);
+            }
+            
+        });
+    }
 }

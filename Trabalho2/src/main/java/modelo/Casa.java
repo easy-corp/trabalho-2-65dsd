@@ -16,14 +16,12 @@ public class Casa {
     private Semaphore mutex;
     private Semaphore mutexCruzamento;
     private UiCasa ui;
-    private Random random;
     private Malha malha;
 
     public Casa(Color cor, TipoCasa tipo) {
         this.cor = cor;
         this.tipo = tipo;
         this.mutex = new Semaphore(1);
-        this.random = new Random();
         this.malha = Malha.getInstance();
     }
 

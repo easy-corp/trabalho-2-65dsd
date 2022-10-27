@@ -18,7 +18,6 @@ public class Carro extends Thread {
     private TipoCasa direcao; // Direcao para onde o carro esta indo
     private UiCarro ui; // UI do carro
     private Malha malha;
-    private HashMap<TipoCasa, List<List<TipoCasa>>> listaMovimentos;
     private Random random = new Random();
     private int velocidade;
     private boolean semaforo = true;
@@ -62,8 +61,6 @@ public class Carro extends Thread {
         this.ui = ui;
     }
 
-    
-
     public boolean isDestroy() {
         return destroy;
     }
@@ -102,6 +99,7 @@ public class Carro extends Thread {
             sleep(velocidade);
 
             while (!destroy) {
+                // Validacao de vida da Thread
                 System.out.println(new Date().getTime());
                 // Se estiver em frente de um cruzamento
                 if (malha.getCruzamento().contains(proximaCasa)) {
