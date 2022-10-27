@@ -4,6 +4,7 @@ import java.util.Random;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import controle.Malha;
 import javafx.scene.paint.Color;
 import modelo.ui.UiCasa;
 
@@ -16,12 +17,14 @@ public class Casa {
     private Semaphore mutexCruzamento;
     private UiCasa ui;
     private Random random;
+    private Malha malha;
 
     public Casa(Color cor, TipoCasa tipo) {
         this.cor = cor;
         this.tipo = tipo;
         this.mutex = new Semaphore(1);
         this.random = new Random();
+        this.malha = Malha.getInstance();
     }
 
     public Color getCor() {
@@ -35,8 +38,10 @@ public class Casa {
     public void acquireCasa() throws InterruptedException {
         this.mutex.acquire();
 
-        //Para teste
-        //  this.ui.setFill(Color.BLACK);
+        //Para testes
+        if (malha.getDebug()) {
+            this.ui.setFill(Color.BLACK);
+        }
     }
 
     public UiCasa getUi() {
@@ -51,7 +56,9 @@ public class Casa {
         this.mutex.release();
         
         //Para teste
-        // this.ui.setFill(Color.GREEN);
+        if (malha.getDebug()) {
+            this.ui.setFill(this.cor);
+        }
     }
 
     public void acquireCruzamento() throws InterruptedException{

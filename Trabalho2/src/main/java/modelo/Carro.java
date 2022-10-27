@@ -1,6 +1,7 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -22,6 +23,7 @@ public class Carro extends Thread {
     private int velocidade;
     private boolean semaforo = true;
     private boolean firstCasa = true;
+    private boolean destroy = false;
 
     public Carro(Point2D spawnPoint, TipoCasa direcao) {
         mover(spawnPoint, direcao);
@@ -60,6 +62,16 @@ public class Carro extends Thread {
         this.ui = ui;
     }
 
+    
+
+    public boolean isDestroy() {
+        return destroy;
+    }
+
+    public void setDestroy(boolean destroy) {
+        this.destroy = destroy;
+    }
+
     @Override
     public void run() {
         try {
@@ -89,7 +101,8 @@ public class Carro extends Thread {
 
             sleep(velocidade);
 
-            while (true) {
+            while (!destroy) {
+                System.out.println(new Date().getTime());
                 // Se estiver em frente de um cruzamento
                 if (malha.getCruzamento().contains(proximaCasa)) {
                     // Casa antes de entrar no cruzamento;
@@ -214,6 +227,16 @@ public class Carro extends Thread {
                     sleep(velocidade);
                 }
             }
+
+
+            if(cruzamentoAtual != null){
+                cruzamentoAtual.release();
+            }
+
+            casaAtual.releaseCasa();
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -231,10 +254,8 @@ public class Carro extends Thread {
     }
 
     public void destruirCarro() {
-        Carro carro = this;
         this.ui.finalizarCarro();
         this.malha.removeCarro(this.ui);
-        carro = null;
     }
 
 }

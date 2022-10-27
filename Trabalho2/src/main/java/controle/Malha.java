@@ -35,6 +35,7 @@ public class Malha {
     private int qtdCarros = 0;
     private TelaMalhaPrincipal telaMalha;
     private boolean destroy = false;
+    private boolean debugMode = false;    
 
     private Malha() {
     }
@@ -138,8 +139,10 @@ public class Malha {
                 carrosAtivos.remove(carro);
                 contadorCarros.set(carrosAtivos.size());
 
-                Carro newCarro = spawnarCarro();
-                newCarro.start();
+                if(!destroy){
+                    Carro newCarro = spawnarCarro();
+                    newCarro.start();
+                }
             }
 
         });
@@ -158,6 +161,11 @@ public class Malha {
         return this.carros;
     }
 
+    public void clearCarros(){
+        this.carros = new ArrayList<>();
+        this.carrosAtivos = new ArrayList<>();
+    }
+
     public Casa getProximaCasa(Point2D posicaoAtual, TipoCasa direcao) {
         return this.getCasa(this.getProximaPosicao(posicaoAtual, direcao));
     }
@@ -172,6 +180,14 @@ public class Malha {
 
     public IntegerProperty getContadorCarros() {
         return this.contadorCarros;
+    }
+
+    public void setDebug(boolean opt) {
+        this.debugMode = opt;
+    }
+
+    public boolean getDebug() {
+        return this.debugMode;
     }
 
     /**

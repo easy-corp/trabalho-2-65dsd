@@ -70,8 +70,6 @@ public class UiCarro extends ImageView {
 
             @Override
             public void run() {
-                carro = null;
-                telaSize = 0;
                 setImage(null);
             }
             

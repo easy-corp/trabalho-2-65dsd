@@ -1,16 +1,10 @@
 package controle;
 
 import java.io.IOException;
-import java.lang.ModuleLayer.Controller;
-import java.util.Random;
-
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import modelo.Carro;
 import modelo.Casa;
-import modelo.Casa.TipoCasa;
-import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;
 import modelo.ui.UiSimbolo;
 import visao.TelaMalhaPrincipal;
@@ -21,8 +15,6 @@ public class ControladorMalha {
     private TelaMalhaPrincipal telaMalha;
     private Malha malha;
     private Stage stage;
-    private Random random = new Random();
-
     public ControladorMalha(Stage stage) throws IOException {
         this.malha = Malha.getInstance();
         this.stage = stage;

@@ -25,6 +25,9 @@ public class TelaSimulador extends VBox{
 
     private Label contadorCarros;
     private TextField intputQtdCarros;
+    private Button buttonPlay;
+    private Button buttonEncerrar;
+    private Button buttonDebugMode;
 
     public TelaSimulador(TelaMalhaPrincipal telaMalha){
         this.telaMalha = telaMalha;
@@ -40,6 +43,7 @@ public class TelaSimulador extends VBox{
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 contadorCarros.setText(newValue.toString());
             }
+
         });
     }
 
@@ -53,8 +57,6 @@ public class TelaSimulador extends VBox{
         telaControles.setAlignment(Pos.CENTER);
         telaControles.setPrefHeight(100);
 
-
-
         Font fonteGrande = new Font("sans-serif", 18);
         Font fontePequena = new Font("sans-serif", 14);
 
@@ -64,17 +66,14 @@ public class TelaSimulador extends VBox{
         Label labelContador = new Label("Carros Ativos: ");
         labelContador.setFont(fontePequena);
 
-
         Label labelQtdCarrosAtivos = new Label("Quantidade de Carros: ");
         labelContador.setFont(fontePequena);
-
-
 
         HBox botoes = new HBox();
         botoes.setAlignment(Pos.CENTER);
         botoes.setSpacing(10);
         
-        Button buttonPlay = new Button("Iniciar");
+        this.buttonPlay = new Button("Iniciar");
         buttonPlay.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
@@ -92,6 +91,9 @@ public class TelaSimulador extends VBox{
 
                 buttonPlay.setDisable(true);
                 intputQtdCarros.setDisable(true);
+                malha.setDestroy(false);
+                buttonEncerrar.setDisable(false);
+                buttonDebugMode.setDisable(false);
                 
             }
             
@@ -122,31 +124,53 @@ public class TelaSimulador extends VBox{
         });
 
 
-        Button buttonEncerrar = new Button("Encerrar");
+        this.buttonEncerrar = new Button("Encerrar");
+        buttonEncerrar.setDisable(true);
         buttonEncerrar.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
             @Override
             public void handle(MouseEvent event) {
                 malha.setDestroy(true);
+
                 for(UiCarro c : malha.getCarros()){
+                    c.getCarro().setDestroy(true);
+                    c.getCarro().destruirCarro();
+                }
+                for(UiCarro c : malha.getCarrosAtivos()){
+                    c.getCarro().setDestroy(true);
                     c.getCarro().destruirCarro();
                 }
 
-                for(UiCarro c : malha.getCarrosAtivos()){
-                    c.getCarro().destruirCarro();
-                }
+                malha.clearCarros();
 
                 intputQtdCarros.setDisable(false);
                 buttonPlay.setDisable(false);
+                buttonEncerrar.setDisable(true);
+                buttonDebugMode.setDisable(true);
             }
             
         });
 
+        this.buttonDebugMode = new Button("Debugar");
+        buttonDebugMode.setDisable(true);
+        buttonDebugMode.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+            @Override
+            public void handle(MouseEvent event) {
+                if (malha.getDebug()) {
+                    malha.setDebug(false);
+                } else {
+                    malha.setDebug(true);
+                }
+                
+            }
+            
+        });
 
         botoes.getChildren().add(buttonPlay);
         botoes.getChildren().add(buttonEncerrar);
+        botoes.getChildren().add(buttonDebugMode);
         VBox.setMargin(botoes, new Insets(10));
-
    
         contadorCarros.setFont(fonteGrande);
 
