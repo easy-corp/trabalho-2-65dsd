@@ -2,12 +2,15 @@ package controle;
 
 import java.io.IOException;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Scene;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import modelo.Casa;
 import modelo.ui.UiCarro;
 import modelo.ui.UiCasa;

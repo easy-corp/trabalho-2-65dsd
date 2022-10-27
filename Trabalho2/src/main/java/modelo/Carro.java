@@ -77,10 +77,7 @@ public class Carro extends Thread {
             Casa proximaCasa = malha.getCasa(proximaPosicao);
             Semaphore cruzamentoAtual = null;         
 
-            if (firstCasa) {
-                firstCasa = false;
-                malha.addCarroAtivo(this.ui);
-            }
+
 
             if (malha.usaSemaforo()) {
                 // Semaforo faz acquire
@@ -96,13 +93,18 @@ public class Carro extends Thread {
                 }
             }
 
+            if (firstCasa) {
+                firstCasa = false;
+                malha.addCarroAtivo(this.ui);
+            }
+
             sleep(velocidade);
 
             while (!destroy) {
                 posicaoAtual = getPosicao();
 
                 // Validacao de vida da Thread
-                System.out.println(new Date().getTime());
+                // System.out.println(new Date().getTime());
 
                 // Se estiver em frente de um cruzamento
                 if (malha.getCruzamento().contains(proximaCasa)) {

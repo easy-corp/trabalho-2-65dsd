@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 
 //mvn clean javafx:run -e -X
 public class App extends Application {
-    
+
     public static void main(String[] args) throws IOException {
         launch(args);
     }
@@ -15,5 +15,4 @@ public class App extends Application {
     public void start(Stage inicial) throws Exception {
         new ControladorMalha(inicial);
     }
-    
 }
