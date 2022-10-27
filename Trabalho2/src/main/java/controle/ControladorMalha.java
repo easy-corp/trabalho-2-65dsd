@@ -62,10 +62,10 @@ public class ControladorMalha {
             // Percorre colunas
             for (int y = 0; y < this.malha.getWidth(); y++) {
                 // Cria casinha com base na posicao da malha vinda do arquivo
-                UiCasa casa = new UiCasa(new Point2D(x, y), this.telaMalha.getSize(), malha[y][x]);
+                UiCasa casa = new UiCasa(new Point2D(x, y), TelaMalhaPrincipal.size, malha[y][x]);
 
                 // Cria Símbolo com base na posição da malha vinda do arquivo
-                UiSimbolo simbolo = new UiSimbolo(new Point2D(x, y), this.telaMalha.getSize(), malha[y][x]);
+                UiSimbolo simbolo = new UiSimbolo(new Point2D(x, y), TelaMalhaPrincipal.size, malha[y][x]);
 
                 // Adiciona na tela
                 this.telaMalha.getGrupoMalha().getChildren().add(casa);
@@ -76,6 +76,15 @@ public class ControladorMalha {
 
     // Define acao dos botoes
     public void setAcaoBtn() {
+
+        this.telaSimulador.setAcaoRbTipo(new EventHandler<Event>() {
+
+            @Override
+            public void handle(Event event) {
+                telaSimulador.setDisableBtnPlay(false);
+            }
+            
+        });
 
         // Acao botao PLAY
         this.telaSimulador.setAcaoBtnPlay(new EventHandler<Event>() {
@@ -125,16 +134,24 @@ public class ControladorMalha {
 
                 malha.clearCarros();
 
+                //Retira a malha da tela e insere um nova
                 telaSimulador.removeChildren(1);
+
                 TelaMalhaPrincipal novaTelaMalha = new TelaMalhaPrincipal(malha.getWidth(), malha.getHeight());
-                malha.setTelaMalha(novaTelaMalha);
+                telaMalha = novaTelaMalha;
                 geraMalha(malha.getMalha());
+                malha.setTelaMalha(novaTelaMalha);
+                
                 telaSimulador.addChildren(novaTelaMalha.createContent());
 
+                malha.setDebug(false);
+
                 telaSimulador.setDisableInpQtdCarros(false);
-                telaSimulador.setDisableBtnPlay(false);
+                telaSimulador.setDisableBtnPlay(true);
                 telaSimulador.setDisableBtnEncerrar(true);
                 telaSimulador.setDisableBtnDebug(true);
+                telaSimulador.setSelectedRbSemaforo(false);
+                telaSimulador.setSelectedRbMonitor(false);
                 telaSimulador.setDisableRbSemaforo(false);
                 telaSimulador.setDisableRbSemaforo(false);
             }
@@ -146,8 +163,6 @@ public class ControladorMalha {
 
             @Override
             public void handle(Event event) {
-                System.out.println(malha.getDebug());
-
                 if (malha.getDebug()) {
                     malha.setDebug(false);
                 } else {

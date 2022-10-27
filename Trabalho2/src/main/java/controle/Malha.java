@@ -19,7 +19,8 @@ public class Malha {
 
     // Singleton guardando os dados importantes para o projeto
 
-    private static Malha instance;
+    private static Malha instance; // Instancia do Singleton
+    private TelaMalhaPrincipal telaMalha; // Tela principal
     private int width; // Largura da malha
     private int height; // Altura da malha
     private Casa[][] malha; // A malha
@@ -29,14 +30,13 @@ public class Malha {
     private List<UiCarro> carrosAtivos = new ArrayList<>(); // Lista dos carros inseridos
     private List<Casa> cruzamentos = new ArrayList<>(); // Lista dos carros inseridos
     private HashMap<TipoCasa, List<List<TipoCasa>>> movimentosPossiveisCruzamento = this
-            .criaMovimentosPossiveisCruzamento();
-    private HashMap<Point2D, UiCarro> casaOcupada = new HashMap<>();
-    private IntegerProperty contadorCarros = new SimpleIntegerProperty();
-    private int qtdCarros = 0;
-    private TelaMalhaPrincipal telaMalha;
-    private String tipoThread = "Semáforo";
-    private boolean destroy = false;
-    private boolean debugMode = false;    
+            .criaMovimentosPossiveisCruzamento(); // Movimentos possiveis quando se esta em um cruzamento
+    private HashMap<Point2D, UiCarro> casaOcupada = new HashMap<>(); // Controle de ocupacao de casa
+    private IntegerProperty contadorCarros = new SimpleIntegerProperty(); // Contador de carros (listener)
+    private int qtdCarros = 0; // Quantidade de carros
+    private String tipoThread = "Semáforo"; // Tipo dos controladoes (Semáforo ou Monitor)
+    private boolean destroy = false; // Controle para destruir threads
+    private boolean debugMode = false; // Controle para visualizar acquire e realease
 
     private Malha() {
     }

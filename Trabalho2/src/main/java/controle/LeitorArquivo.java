@@ -108,7 +108,7 @@ public class LeitorArquivo {
     }
 
 
-    public void padroes() {
+    private void padroes() {
         this.padraoMalha = new HashMap<Integer, Casa>();
 
         // Para cada valor inteiro ha um desenho correspondente

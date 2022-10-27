@@ -88,6 +88,7 @@ public class TelaSimulador extends VBox{
         this.RbMonitor.setToggleGroup(tgGroup);
         
         this.buttonPlay = new Button("Iniciar");
+        buttonPlay.setDisable(true);
 
         intputQtdCarros = new TextField();
         intputQtdCarros.setMaxWidth(60);
@@ -161,6 +162,11 @@ public class TelaSimulador extends VBox{
     public Toggle getRbTipo() {
         return this.tgGroup.getSelectedToggle();
     }
+    
+    public void setAcaoRbTipo(EventHandler acao) {
+        this.RbSemaforo.setOnMouseClicked(acao);
+        this.RbMonitor.setOnMouseClicked(acao);
+    }
 
     public void setDisableRbSemaforo(boolean opt) {
         this.RbSemaforo.setDisable(opt);
@@ -168,6 +174,14 @@ public class TelaSimulador extends VBox{
 
     public void setDisableRbMonitor(boolean opt) {
         this.RbMonitor.setDisable(opt);
+    }
+
+    public void setSelectedRbSemaforo(boolean opt) {
+        this.RbSemaforo.setSelected(opt);
+    }
+
+    public void setSelectedRbMonitor(boolean opt) {
+        this.RbMonitor.setSelected(opt);
     }
 
     public void removeChildren(int i) {

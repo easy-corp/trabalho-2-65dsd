@@ -2,12 +2,13 @@ package visao;
 
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
 public class TelaMalhaPrincipal {
 
-    public static final int size = 25;
+    public static final int size = 20;
 	private final int width;
 	private final int heigth;
     private HBox malha;
@@ -40,16 +41,16 @@ public class TelaMalhaPrincipal {
         return root;
     }
 
-    public int getSize() {
-        return this.size;
-    }
-
     public Group getGrupoMalha() {
         return this.grupoMalha;
     }
 
     public Group getGrupoCarros() {
         return this.grupoCarros;
+    }
+
+    public void addChildren(Node no) {
+        this.malha.getChildren().addAll(no);
     }
 
 }
