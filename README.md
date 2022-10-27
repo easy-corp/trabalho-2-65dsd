@@ -25,6 +25,4 @@ Os usuários do NetBeans tem uma vantagem nesse quesito, tendo em vista que o Ma
 Por conta disso, não é necessário fazer nenhuma configuração externa para a execução. Dentro da IDE, basta apertar com o botão direito
 na classe main do projeto, ir até a opção RUN MAVEN -> GOALS e então setar o parâmetro: **clean javafx:run -e -X**.
 
-![image](https://user-images.githubusercontent.com/44239991/198273610-cb413a7a-e62e-4b49-ba7c-a93203c53d97.png)
-
-![image](https://user-images.githubusercontent.com/44239991/198274121-dcb4c7c7-4106-416e-9a88-38945fba7d9b.png)
+![198273610-cb413a7a-e62e-4b49-ba7c-a93203c53d97](https://user-images.githubusercontent.com/44239991/198341862-97c38b2b-7502-45e8-99f4-1022ffa3bb80.png)
