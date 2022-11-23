@@ -1,5 +1,6 @@
 controle\Malha.class
 modelo\ui\UiCarro$3.class
+controle\ControladorMalha$5.class
 modelo\Casa$TipoCasa.class
 visao\TelaSimulador.class
 modelo\ui\UiCasa.class
